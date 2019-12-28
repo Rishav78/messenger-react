@@ -1,0 +1,45 @@
+
+.chat{
+    display: flex;
+    flex-direction: row;
+    height: 79px;
+    background: #ffffff;
+    cursor: pointer;
+}
+.chat:hover {
+    background-color: rgba(235,235,235, 1);
+}
+.dp{
+    display: flex; 
+    flex-direction: row;
+    align-items: center;
+    padding-right: 12px;
+    padding-left: 12px;
+}
+.chatinfomation {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    padding-right: 8px; 
+    border-bottom: 1px solid #ebebeb;
+}
+.basic {
+    display: flex; 
+    flex-direction: row;
+}
+.chatname {
+    flex: 1
+}
+.activity {
+    font-size: 12px;
+    color: #d3d3d3;
+    font-weight: bolder;
+}
+.msgAndStatus {
+    display: flex;
+    flex-direction: row;
+}
+.lastmessage {
+    flex: 1;
+}

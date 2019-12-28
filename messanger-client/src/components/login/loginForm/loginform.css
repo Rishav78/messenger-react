@@ -1,0 +1,12 @@
+.loginform{
+    width: 350px;
+}
+.loginform button{
+    margin-top: 10px;
+    border: 1px solid rgba(0,0,0,0.5);
+    background-color: #eee;
+    color: #333;
+    padding: 8px 12px;
+    float: right;
+    cursor: pointer;
+}
