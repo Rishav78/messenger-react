@@ -14,20 +14,22 @@ function getChats(props, cb) {
             rest.receiver = chatmembers.filter( usr => usr._id != _id);
             return rest;
         });
-        cb(chats);
+        cb({chats, _id});
     });
 }
 
 function OngoingChats(props) {
     const [search, onSearchChange] = useState('');
-    const [chats, setChats] = useState([]);
+    const [chats, setChats] = useState(null);
     useEffect(() => {
         getChats(props, setChats);
     },[])
     return (
         <div>
             <div>
-                <Header />
+                <Header
+                    changeComponent={props.changeComponent}
+                />
             </div>
             <div>
                 <Searchbar 
@@ -37,10 +39,10 @@ function OngoingChats(props) {
             </div>
             <div>
                 {
-                    chats.length > 0 ? chats.map((chat, i) => 
+                    chats ? chats.chats.map((chat, i) => 
                         <Chat 
                             key={i}
-                            data={chat}
+                            data={{ chat, _id:chats._id }}
                             onclick={ (_id) => props.onChatSelect(_id)}
                         />) : null
                 }

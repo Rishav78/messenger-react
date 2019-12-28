@@ -9,11 +9,11 @@ export default {
         backgroundColor: '#ffffff'
     },
     left: {
-        width: '30%', 
+        flex: '30%', 
         height: '100%'
     },
     right: {
-        width: '70%', 
+        flex: '70%', 
         height: '100%'
     }
 }

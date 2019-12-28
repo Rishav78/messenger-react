@@ -8,6 +8,8 @@ function Right(props) {
         props.chat ? <Chatprofile
             chat={props.chat}
             io={props.io}
+            messages={props.messages}
+            onChangeMessages={props.onChangeMessages}
         /> : <WelcomePage />
     );
 }

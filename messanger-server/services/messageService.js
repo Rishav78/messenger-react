@@ -2,14 +2,13 @@ const messages = require('../models/messages');
 const chats = require('../models/chats');
 
 exports.getmessages = async _id => {
-    console.log(_id)
     try {
         const message = await chats.findById(_id, { messages: 1 })
                 .populate({
                     path: 'messages',
                     options: {
                         sort: {
-                            createdAt: -1,
+                            createdAt: 1,
                         }
                     },
                     populate: {
@@ -20,7 +19,6 @@ exports.getmessages = async _id => {
                         },
                     },
                 });
-        console.log(message)
         return { success: true, message };
     } catch (err) {
         return { success: false };

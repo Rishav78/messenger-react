@@ -36,6 +36,7 @@ module.exports = server => {
 
         socket.on('send-message', async (data, cb) => {
             const message = await controllers.messages.saveMessage(data, cb);
+            console.log(data.receiver)
             data.receiver.forEach( e => {
                 const socketid = connected[e._id];
                 console.log(socketid);

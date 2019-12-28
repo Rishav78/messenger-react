@@ -29,9 +29,10 @@ function getChatInformation(props, io, Ccb, Mcb) {
         const Token = localStorage.getItem('Token1');
         if(!Token) return props.history.push('/');
         io.emit('get-chat-information', { Token, _id }, (data) => {
-            const { chatmembers, ...rest } = data.chat;
-            rest.sender = data._id;
-            rest.receiver = chatmembers.filter( e => e._id != _id);
+            const { authenticated, success, ...rest} = data;
+            const { chatmembers } = rest.chat;
+            rest.chat.sender = data._id;
+            rest.chat.receiver = chatmembers.filter( e => e._id != data._id);
             Ccb(rest);
             getmessages(_id, Mcb, props);
         })
@@ -56,6 +57,8 @@ function Chatbox(props) {
             <div className="right" style={styles.right}>
                 <Right
                     chat={selectedChat}
+                    messages={messages}
+                    onChangeMessages={onChangeMessage}
                     io={io}
                 />
             </div>

@@ -25,16 +25,33 @@ exports.ongoningChats = async _id => {
                 chatname: 1,
                 chattype: 1,
                 updatedAt: 1,
+                messages: 1,
             },
-            'populate': {
-                'path': 'chatmembers',
-                'select': {
-                    firstname: 1,
-                    lastname: 1,
-                }
-            },
+            'populate': [
+                    {
+                        'path': 'chatmembers',
+                        'select': {
+                            firstname: 1,
+                            lastname: 1,
+                        }
+                    },
+                    {
+                        path: 'messages',
+                        populate: {
+                            path: 'sender',
+                            select: {
+                                firstname: 1,
+                                lastname: 1,
+                            }
+                        },
+                        options: {
+                            limit: 1,
+                            sort: { updatedAt: -1 }
+                        }
+                    }
+            ],
             'options': { 'sort': { 'updatedAt': -1 } } 
-        });
+            });
     return chats;
 }
 
@@ -59,7 +76,7 @@ exports.alreadyGoingon = async (_id, friendid) => {
 
 exports.chatInformation = async _id => {
     try {
-        const chat = await chats.findById(_id, { messages: 0 })
+        const chat = await chats.findById(_id)
                 .populate({
                     path: 'chatmembers',
                     select: {

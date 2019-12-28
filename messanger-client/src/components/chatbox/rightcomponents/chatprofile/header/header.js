@@ -11,11 +11,11 @@ function Header(props) {
             <div>
                 <div>
                     <div style={{ fontSize: 17, color: '#333' }}>
-                        <span>{props.chattype ? props.data.chatname : (props.data.receiver[0].firstname + ' ' + props.data.receiver[0].lastname)}</span>
+                        <span>{props.data.chat.chattype ? props.data.chat.chatname : (props.data.chat.receiver[0].firstname + ' ' + props.data.chat.receiver[0].lastname)}</span>
                     </div>
-                    { props.chattype ? 
+                    { props.data.chat.chattype ? 
                         <div style={{marginTop: 4, fontSize: 14, color: '#9d9d9d'}}>
-                            <span>{props.chatmembers.map( e => e.firstname).join(', ')}</span>
+                            <span>{props.data.chat.chatmembers.map( e => e.firstname).join(', ')}</span>
                         </div> : null
                     }
                 </div>
