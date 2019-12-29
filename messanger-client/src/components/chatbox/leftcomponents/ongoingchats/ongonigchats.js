@@ -3,27 +3,14 @@ import Header from './header/header';
 import Searchbar from '../searchbar/searchbar';
 import Chat from './chat/chat';
 
-function getChats(props, cb) {
-    const { io } = props;
-    const Token = localStorage.getItem('Token1');
-    io.emit('get-ongoing-chats', { Token }, data => {
-        const { activeChats, _id } = data.chats;
-        const chats = activeChats.map( e => {
-            const { chatmembers, ...rest} = e;
-            rest.sender = _id;
-            rest.receiver = chatmembers.filter( usr => usr._id != _id);
-            return rest;
-        });
-        cb({chats, _id});
-    });
+function getname(chat) {
+   return chat.chattype ? chat.chatname : (chat.receiver[0].firstname + ' ' + chat.receiver[0].lastname)
 }
 
 function OngoingChats(props) {
     const [search, onSearchChange] = useState('');
-    const [chats, setChats] = useState(null);
-    useEffect(() => {
-        getChats(props, setChats);
-    },[])
+    const chats = props.chats && props.chats.chats.filter(e => !search || getname(e).match(new RegExp(search)))
+    console.log(chats)
     return (
         <div>
             <div>
@@ -39,11 +26,12 @@ function OngoingChats(props) {
             </div>
             <div>
                 {
-                    chats ? chats.chats.map((chat, i) => 
+                    chats ? chats.map((chat, i) => 
                         <Chat 
                             key={i}
                             data={{ chat, _id:chats._id }}
-                            onclick={ (_id) => props.onChatSelect(_id)}
+                            onclick={ () => props.onChatSelect(i)}
+                            selectedchat={props.selectedchat === i}
                         />) : null
                 }
             </div>

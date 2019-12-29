@@ -4,8 +4,8 @@ import Addfriends from './addfriends/addfiends';
 import Startnewchat from './startnewchat/startnewchat';
 
 function goToOngoingChat(props, cb) {
-    return function(data) {
-        props.onChatSelect(data);
+    return function(chatno, _id) {
+        props.onChatSelect(chatno, _id);
         cb(0);
     }
 }
@@ -16,6 +16,8 @@ function Left(props) {
         component == 0 ?
         <OngoingChats 
             io={props.io}
+            selectedchat={props.selectedchat}
+            chats={props.chats}
             onChatSelect={props.onChatSelect}
             changeComponent={changeComponent}
         /> : component == 1 ? 
@@ -30,17 +32,3 @@ function Left(props) {
 }
 
 export default Left;
-
-
-/* <OngoingChats 
-            io={props.io}
-            onChatSelect={props.onChatSelect}
-        /> */
-
-
-        /*<Addfriends
-            io={props.io}
-        />
-        
-        
-        */

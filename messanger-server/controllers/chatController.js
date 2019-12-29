@@ -19,12 +19,12 @@ exports.createPrivateChatroom = async (data, cb) => {
 
     const { _id } = user.user;
     const { activeChats:chat } = await services.chats.alreadyGoingon(_id, data._id);
-    console.log(chat);
-    if(chat.length > 0) return cb({ authenticated, chat: chat[0] });
+    if(chat.length > 0) return cb({ authenticated, chat: chat[0], exists: true });
     
     const chatmembers = [data._id, _id];
+    console.log(chatmembers)
     const res = await services.chats.createPrivateChatroom(chatmembers);
-    cb(res);
+    cb({ ...res, _id });
 }
 
 exports.chatInformation = async (data, cb) => {

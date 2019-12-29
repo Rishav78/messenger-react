@@ -6,7 +6,7 @@ import styles from './chatboxstyle.js';
 
 const io = SocketIO('http://localhost:8000');
 
-async function authentication(props, io) {
+async function authentication(props) {
     const Token = localStorage.getItem('Token1');
     if(!Token) return props.history.push('/');
     const res = await fetch(`http://localhost:8000/validtoken/?Token=${Token}`);
@@ -24,26 +24,65 @@ function getmessages(_id, cb, props) {
     })
 }
 
-function getChatInformation(props, io, Ccb, Mcb) {
-    return function(_id) {
-        const Token = localStorage.getItem('Token1');
-        if(!Token) return props.history.push('/');
-        io.emit('get-chat-information', { Token, _id }, (data) => {
-            const { authenticated, success, ...rest} = data;
-            const { chatmembers } = rest.chat;
-            rest.chat.sender = data._id;
-            rest.chat.receiver = chatmembers.filter( e => e._id != data._id);
-            Ccb(rest);
-            getmessages(_id, Mcb, props);
-        })
+function getChats(cb) {
+    const Token = localStorage.getItem('Token1');
+    io.emit('get-ongoing-chats', { Token }, data => {
+        const { _id } = data;
+        const { activeChats } = data.chats;
+        const chats = activeChats.map( e => {
+            const { chatmembers, ...rest} = e;
+            rest.sender = _id;
+            rest.receiver = chatmembers.filter( usr => usr._id != _id);
+            return rest;
+        });
+        console.log(chats)
+        cb({chats, _id});
+    });
+}
+
+function createChatRoom(_id, chats, setchats, changemessages, onchatselect){
+    const Token = localStorage.getItem('Token1');
+    io.emit('create-private-chat-room', { Token, _id }, data => {
+        const { exists } = data;
+        if(exists) {
+            for(let i=0;i<chats.chats.length;i++) {
+                if(chats.chats[i]._id === data.chat._id){
+                    onchatselect(i);
+                    break;
+                }
+            }
+        } else {
+            const { chat, _id:id } = data;
+            const { chatmembers, ...rest } = chat;
+            rest.sender = id;
+            rest.receiver = chatmembers.filter( usr => usr._id != id);
+            chats.chats = [...chats.chats, rest];
+            setchats(chats);
+            changemessages([]);
+        }
+    });
+}
+
+function selectChatAndGetMessages(props, onchatselect, chats, changemessages, setchats) {
+    return function(chatno, _id) {
+        if(chatno === null) {
+            createChatRoom( _id, chats, setchats, changemessages, onchatselect);
+            onchatselect(chats.length-1);
+        } else {
+            onchatselect(chatno);
+            const { _id } = chats.chats[chatno];
+            getmessages(_id, changemessages, props);
+        }
     }
 }
 
 function Chatbox(props) {
     const [selectedChat, onChatSelect] = useState(null);
     const [messages, onChangeMessage] = useState([]);
+    const [chats, setChats] = useState(null);
     useEffect(() => {
-        authentication(props,io);
+        authentication(props);
+        getChats(setChats);
     },[])
 
     return (
@@ -51,12 +90,14 @@ function Chatbox(props) {
             <div className="left" style={styles.left}>
                 <Left 
                     io={io}
-                    onChatSelect={getChatInformation(props, io, onChatSelect, onChangeMessage)}
+                    chats={chats}
+                    selectedchat={selectedChat}
+                    onChatSelect={selectChatAndGetMessages(props, onChatSelect, chats, onChangeMessage, setChats)}
                 />
             </div>
             <div className="right" style={styles.right}>
                 <Right
-                    chat={selectedChat}
+                    chat={selectedChat !== null ? chats.chats[selectedChat] : null}
                     messages={messages}
                     onChangeMessages={onChangeMessage}
                     io={io}

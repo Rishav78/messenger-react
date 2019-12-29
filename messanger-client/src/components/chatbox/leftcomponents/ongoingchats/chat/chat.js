@@ -8,10 +8,9 @@ function getTimePeriod(t) {
 }
 
 function Chat(props) {
-    console.log(props.data.chat.messages);
     return (
-        <div tabIndex="-1" onClick={() => props.onclick(props.data.chat._id)}>
-            <div className="card">
+        <div tabIndex="-1" onClick={props.onclick}>
+            <div className="card" style={{backgroundColor: props.selectedchat ? '#ebebeb':null}}>
                 <div className="dp">
                     <div style={{width: 49, height: 49}}>
                         <img src={'props.dp'} />

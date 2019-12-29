@@ -13,11 +13,7 @@ function getfriends(props, cb) {
 
 function createChatRoom(props) {
     return function(_id) {
-        const { io } = props;
-        const Token = localStorage.getItem('Token1');
-        io.emit('create-private-chat-room', { Token, _id }, data => {
-            props.onChatSelect(data.chat._id);
-        });
+        props.onChatSelect(null, _id);
     }
 }
 
