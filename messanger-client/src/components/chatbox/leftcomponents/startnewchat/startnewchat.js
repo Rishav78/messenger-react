@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Friend from './friend/friend';
 import Searchbar from '../searchbar/searchbar';
+import Header from '../Header/header';
+
+function getname(friend) {
+    return friend.firstname+' '+friend.lastname;
+}
 
 function getfriends(props, cb) {
     const { io } = props;
@@ -19,19 +24,26 @@ function createChatRoom(props) {
 
 function Startnewchat(props) {
     const [friends, onChangeFriends] = useState([]);
+    const [search, onChangeSearch] = useState('');
     useEffect(() => {
         getfriends(props, onChangeFriends);
     },[])
     return (
         <div>
             <div>
+                <Header
+                    tittle="New Chat"
+                    onBack={props.changeComponent}
+                    />
+            </div>
+            <div>
                 <Searchbar
                     placeholder="Search here..."
-                    onchange={(e) => console.log(e)} />
+                    onchange={onChangeSearch} />
             </div>
             <div>
                 {
-                    friends.map((friend, i) => 
+                    friends.filter(e => !search || getname(e).match(new RegExp(search, "i"))).map((friend, i) => 
                         <Friend 
                             key={i}
                             data={friend}

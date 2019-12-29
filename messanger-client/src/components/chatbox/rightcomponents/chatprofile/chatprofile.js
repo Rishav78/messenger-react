@@ -8,7 +8,8 @@ function sendMessage(props, message, cb) {
         if(e.keyCode !== 13) return;
         const Token = localStorage.getItem('Token1');
         if(!Token) return;
-        io.emit('send-message',{...props.chat.chat, message, Token},(data) => {
+        const { receiver, _id } = props.chat;
+        io.emit('send-message',{ _id, receiver, message, Token },(data) => {
             const newMessages = [...props.messages, data.msg];
             props.onChangeMessages(newMessages);
             cb('')

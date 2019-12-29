@@ -71,6 +71,7 @@ exports.alreadyGoingon = async (_id, friendid) => {
                     }
                 ]}
             });
+    
     return { activeChats };
 }
 

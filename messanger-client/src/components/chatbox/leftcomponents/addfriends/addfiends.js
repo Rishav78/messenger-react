@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Searchbar from '../searchbar/searchbar';
 import Availableuser from './availableusers/availableusers';
+import Header from '../Header/header';
 
 async function getusers(props, cb) {
     const { io } = props;
@@ -25,6 +26,10 @@ function add(props, users, cb) {
     }
 }
 
+function getname(user) {
+    return user.firstname+' '+user.lastname;
+}
+
 function Addfriends(props) {
     const [search, onChangeSearch] = useState('');
     const [users, onChangeUsers] = useState([]);
@@ -36,13 +41,19 @@ function Addfriends(props) {
     return (
         <div>
             <div>
+                <Header 
+                    tittle="Add Friend"
+                    onBack={props.changeComponent}
+                />
+            </div>
+            <div>
                 <Searchbar
                     placeholder="search here..."
                     onchange={onChangeSearch} />
             </div>
             <div>
                 <div>
-                    { users.map((user, i) => 
+                    { users.filter(e => !search || getname(e).match(new RegExp(search, "i"))).map((user, i) => 
                         <Availableuser
                             key={i}
                             data={user}

@@ -9,7 +9,7 @@ function getname(chat) {
 
 function OngoingChats(props) {
     const [search, onSearchChange] = useState('');
-    const chats = props.chats && props.chats.chats.filter(e => !search || getname(e).match(new RegExp(search)))
+    const chats = props.chats && props.chats.chats.filter(e => !search || getname(e).match(new RegExp(search, "i")))
     console.log(chats)
     return (
         <div>

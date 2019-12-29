@@ -43,31 +43,36 @@ function getChats(cb) {
 function createChatRoom(_id, chats, setchats, changemessages, onchatselect){
     const Token = localStorage.getItem('Token1');
     io.emit('create-private-chat-room', { Token, _id }, data => {
-        const { exists } = data;
-        if(exists) {
-            for(let i=0;i<chats.chats.length;i++) {
-                if(chats.chats[i]._id === data.chat._id){
-                    onchatselect(i);
-                    break;
-                }
-            }
-        } else {
-            const { chat, _id:id } = data;
+        const { chat, _id:id } = data;
             const { chatmembers, ...rest } = chat;
             rest.sender = id;
             rest.receiver = chatmembers.filter( usr => usr._id != id);
+            console.log(rest);
             chats.chats = [...chats.chats, rest];
             setchats(chats);
-            changemessages([]);
-        }
+            onchatselect(chats.chats.length-1);
+            changemessages([])
     });
+}
+
+function chatAlreadyGoingon(_id, chats, setchats, changemessages, onchatselect, props) {
+    const Token = localStorage.getItem('Token1');
+    io.emit('chat-already-going-on', { _id, Token }, (data) => {
+        const { chat } = data;
+        if(!chat) return createChatRoom(_id, chats, setchats, changemessages, onchatselect);
+        for(let i=0;i<chats.chats.length;i++) {
+            if(chats.chats[i]._id === chat._id){
+                selectChatAndGetMessages(props,onchatselect, chats, changemessages, setchats)(i);
+                break;
+            }
+        }
+    })
 }
 
 function selectChatAndGetMessages(props, onchatselect, chats, changemessages, setchats) {
     return function(chatno, _id) {
         if(chatno === null) {
-            createChatRoom( _id, chats, setchats, changemessages, onchatselect);
-            onchatselect(chats.length-1);
+            chatAlreadyGoingon( _id, chats, setchats, changemessages, onchatselect, props);
         } else {
             onchatselect(chatno);
             const { _id } = chats.chats[chatno];

@@ -6,6 +6,7 @@ module.exports = server => {
     const io = socketIO(server);
 
     connected = {};
+    connected2 = {}
 
     io.on('connection', function(socket){
         
@@ -16,6 +17,7 @@ module.exports = server => {
             const { _id } = user.user;
 
             connected[_id] = socket.id;
+            connected2[socket.id] = _id;
 
             console.log('a user connected');
         })
@@ -34,16 +36,22 @@ module.exports = server => {
 
         socket.on('get-messages', controllers.messages.getmessages);
 
+        socket.on('chat-already-going-on', controllers.chats.alreadyGoingon);
+
         socket.on('send-message', async (data, cb) => {
             const message = await controllers.messages.saveMessage(data, cb);
-            console.log(data.receiver)
             data.receiver.forEach( e => {
                 const socketid = connected[e._id];
-                console.log(socketid);
                 if(socketid) io.to(socketid).emit('new-message', {...message})
             });
         })
 
-        socket.on('disconnect', () => console.log('user disconnected'));
+        socket.on('disconnect', () => {
+            const _id = connected2[socket.id];
+            delete connected2[socket.id];
+            delete connected[_id];
+            console.log(connected)
+            console.log('user disconnected')
+        });
     });
 }

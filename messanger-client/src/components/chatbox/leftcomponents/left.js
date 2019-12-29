@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import OngoingChats from './ongoingchats/ongonigchats';
 import Addfriends from './addfriends/addfiends';
 import Startnewchat from './startnewchat/startnewchat';
+import Profie from './profile/profile';
 
 function goToOngoingChat(props, cb) {
     return function(chatno, _id) {
@@ -13,7 +14,16 @@ function goToOngoingChat(props, cb) {
 function Left(props) {
     const [component, changeComponent] = useState(0);
     return(
-        component == 0 ?
+        <Profie />        
+
+    )
+}
+
+export default Left;
+
+
+/*
+component == 0 ?
         <OngoingChats 
             io={props.io}
             selectedchat={props.selectedchat}
@@ -24,11 +34,9 @@ function Left(props) {
         <Startnewchat
             io={props.io}
             onChatSelect={goToOngoingChat(props, changeComponent)}
+            changeComponent={changeComponent}
         /> : <Addfriends
                 io={props.io}
+                changeComponent={changeComponent}
             />
-
-    )
-}
-
-export default Left;
+            */
