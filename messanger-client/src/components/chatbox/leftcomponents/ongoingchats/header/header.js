@@ -3,30 +3,27 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import ChatIcon from '@material-ui/icons/Chat';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
-function getUserInformation(io, onChangeUser, onImageChange) {
+function getUserInformation(io, onImageChange) {
     const Token = localStorage.getItem('Token1');
     io.emit('loged-user-information',{ Token }, data => {
         const { user } = data;
-        console.log(user)
-        onChangeUser(user);
         onImageChange(user.imageid);
     })
 }
 
 function Header(props) {
     const [image, onImageChange]  = useState('#');
-    const [user, onChangeUser] = useState({});
     useEffect(() => {
         const { io } = props;
-        getUserInformation(io, onChangeUser, onImageChange);
-    },[])
+        getUserInformation(io, onImageChange);
+    },[props])
     return(
         <header className="header">
             <div style={{flex: 1}}>
                 <div style={{width: 40, height: 40, cursor: 'pointer', borderRadius: '50%', overflow: 'hidden'}}
                     onClick={() => props.changeComponent(3)}
                 >
-                    <img src={`http://localhost:8000/profilepicture/?id=${image}`} style={{borderWidth: '50%', width: '100%', height: '100%'}} />
+                    <img alt="user" src={`http://localhost:8000/profilepicture/?id=${image}`} style={{borderWidth: '50%', width: '100%', height: '100%'}} />
                 </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', paddingRight: 12}}>

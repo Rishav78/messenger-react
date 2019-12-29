@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Header from './header/header';
 import Messages from './messages/messages';
 
@@ -18,11 +18,6 @@ function sendMessage(props, message, cb) {
 }
 
 function Chatpofile(props) {
-
-    props.io.on('new-message', (data) => {
-        const newMessages = [...props.messages, data.msg];
-        props.onChangeMessages(newMessages);
-    })
 
     const [message, onchange] = useState('');
 

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import Header from './header/header';
 import Searchbar from '../searchbar/searchbar';
 import Chat from './chat/chat';
@@ -10,7 +10,6 @@ function getname(chat) {
 function OngoingChats(props) {
     const [search, onSearchChange] = useState('');
     const chats = props.chats && props.chats.chats.filter(e => !search || getname(e).match(new RegExp(search, "i")))
-    console.log(chats)
     return (
         <div style={{ display: 'flex', height: '100%', flexDirection: 'column'}}>
             <div>

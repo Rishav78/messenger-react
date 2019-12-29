@@ -5,7 +5,7 @@ function Header(props) {
         <header className="header"  style={{ display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
             <div>
                 <div style={{ width: 44, height: 44, borderRadius: '50%', overflow: 'hidden', marginRight: 20}}>
-                    <img style={{ width: '100%', height: '100%'}} src={`http://localhost:8000/profilepicture/?id=${props.data.chattype ? props.data.imageid : props.data.receiver[0].imageid}`} />
+                    <img alt="user" style={{ width: '100%', height: '100%'}} src={`http://localhost:8000/profilepicture/?id=${props.data.chattype ? props.data.imageid : props.data.receiver[0].imageid}`} />
                 </div>
             </div>
             <div>

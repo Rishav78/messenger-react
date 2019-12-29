@@ -11,7 +11,6 @@ class Auth{
         res = await res.json();
         if(!res.authenticated) return cb(res);
         const { Token } = res;
-        console.log(Token);
         localStorage.setItem("Token1", Token);
         cb({authenticated: true});
     }

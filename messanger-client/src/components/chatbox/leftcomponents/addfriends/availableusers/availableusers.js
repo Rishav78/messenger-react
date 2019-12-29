@@ -2,13 +2,12 @@ import React from 'react';
 import MaterialIcon from 'material-icons-react';
 
 function Availableuser(props) {
-    console.log(props)
     return (
         <div tabIndex="-1">
             <div className="card">
                 <div className="dp">
                     <div style={{width: 49, height: 49, borderRadius: '50%', overflow: 'hidden'}}>
-                        <img style={{width: '100%', height: '100%'}} src={`http://localhost:8000/profilepicture/?id=${props.data.imageid}`} />
+                        <img alt="user" style={{width: '100%', height: '100%'}} src={`http://localhost:8000/profilepicture/?id=${props.data.imageid}`} />
                     </div>
                 </div>
                 <div className="userinfomation">

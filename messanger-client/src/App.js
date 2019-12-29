@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-import decoder from 'jwt-decode';
 import Login from './components/login/login';
 import Signup from './components/signup/signup';
 import Cover from './components/cover/cover';

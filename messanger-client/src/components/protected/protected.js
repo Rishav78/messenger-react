@@ -14,7 +14,6 @@ class ProtectedRoute extends Component{
 
     authentication = async () => {
         const Token = localStorage.getItem('Token1');
-        console.log(this.props)
         if(!Token) return this.props.history.push('/');
         const res = await fetch(`http://localhost:8000/validtoken/?Token=${Token}`);
         const data = await res.json();

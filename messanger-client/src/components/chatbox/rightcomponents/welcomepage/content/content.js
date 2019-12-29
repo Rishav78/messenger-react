@@ -5,7 +5,7 @@ export default function Content(){
     return(
         <div className="contentcontainer">
             <div>
-                <img src='http://localhost:8000/static/intro-connection_c98cc75f2aa905314d74375a975d2cf2.jpg' />
+                <img alt="welcome" src='http://localhost:8000/static/intro-connection_c98cc75f2aa905314d74375a975d2cf2.jpg' />
             </div>
             <div>
                 <div>

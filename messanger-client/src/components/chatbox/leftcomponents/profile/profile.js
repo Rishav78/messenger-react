@@ -22,7 +22,6 @@ function getUserInformation(io, onChangeUser, onImageChange) {
     const Token = localStorage.getItem('Token1');
     io.emit('loged-user-information',{ Token }, data => {
         const { user } = data;
-        console.log(user)
         onChangeUser(user);
         onImageChange(user.imageid);
     })
@@ -37,7 +36,7 @@ function Profile(props) {
     useEffect(() => {
         const { io } = props;
         getUserInformation(io, onChangeUser, onImageChange);
-    },[])
+    },[props])
 
     return (
         <div>
@@ -53,7 +52,7 @@ function Profile(props) {
                         onClick={(e) => imageinput.current.click() }
                     >
                         <input ref={imageinput} onChange={uploadImage(onImageChange)} name="filename" type="file" style={{display: 'none'}} />
-                        <img src={`http://localhost:8000/profilepicture/?id=${image}`} style={{ width: '100%', height: '100%'}} />
+                        <img alt="user" src={`http://localhost:8000/profilepicture/?id=${image}`} style={{ width: '100%', height: '100%'}} />
                         <span style={{ width: '100%', height: '100%', textAlign: 'center'}}>
                             {showchangedp ?
                                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.2)', position: 'absolute', zIndex: 100}}>

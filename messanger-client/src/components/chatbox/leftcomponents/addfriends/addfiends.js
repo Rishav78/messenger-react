@@ -36,7 +36,7 @@ function Addfriends(props) {
 
     useEffect(() => {
         getusers(props, onChangeUsers);
-    },[])
+    },[props])
 
     return (
         <div style={{ display: 'flex', height: '100%', flexDirection: 'column'}}>

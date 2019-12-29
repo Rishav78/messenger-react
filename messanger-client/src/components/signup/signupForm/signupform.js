@@ -18,7 +18,6 @@ export default class SignupForm extends Component {
     handleFormSubmit = (e) => {
         e.preventDefault();
         const { firstname, lastname, phone, password, confirm } = this.state;
-        console.log(password, confirm);
         if(!firstname || !lastname || !phone || !password || !confirm) return alert('empty field');
         if(password !== confirm) return alert('password not match');
         let userInfo = {...this.state};

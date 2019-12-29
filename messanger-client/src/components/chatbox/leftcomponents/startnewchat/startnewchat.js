@@ -27,7 +27,7 @@ function Startnewchat(props) {
     const [search, onChangeSearch] = useState('');
     useEffect(() => {
         getfriends(props, onChangeFriends);
-    },[])
+    },[props])
     return (
         <div style={{ display: 'flex', height: '100%', flexDirection: 'column'}}>
             <div>

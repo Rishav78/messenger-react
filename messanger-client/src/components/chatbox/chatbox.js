@@ -32,10 +32,9 @@ function getChats(cb) {
         const chats = activeChats.map( e => {
             const { chatmembers, ...rest} = e;
             rest.sender = _id;
-            rest.receiver = chatmembers.filter( usr => usr._id != _id);
+            rest.receiver = chatmembers.filter( usr => usr._id !== _id);
             return rest;
         });
-        console.log(chats)
         cb({chats, _id});
     });
 }
@@ -46,7 +45,7 @@ function createChatRoom(_id, chats, setchats, changemessages, onchatselect){
         const { chat, _id:id } = data;
             const { chatmembers, ...rest } = chat;
             rest.sender = id;
-            rest.receiver = chatmembers.filter( usr => usr._id != id);
+            rest.receiver = chatmembers.filter( usr => usr._id !== id);
             chats.chats = [...chats.chats, rest];
             setchats(chats);
             onchatselect(chats.chats.length-1);
@@ -87,7 +86,13 @@ function Chatbox(props) {
     useEffect(() => {
         authentication(props);
         getChats(setChats);
-    },[])
+    },[props])
+    io.on('new-message', (data) => {
+        if(selectedChat!==null && chats.chats[selectedChat]._id === data._id) {
+            const newMessages = [...messages, data.msg];
+            onChangeMessage(newMessages);
+        }
+    })
 
     return (
         <div style={styles.container}>
