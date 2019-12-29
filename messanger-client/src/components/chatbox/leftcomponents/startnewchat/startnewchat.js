@@ -29,7 +29,7 @@ function Startnewchat(props) {
         getfriends(props, onChangeFriends);
     },[])
     return (
-        <div>
+        <div style={{ display: 'flex', height: '100%', flexDirection: 'column'}}>
             <div>
                 <Header
                     tittle="New Chat"
@@ -41,7 +41,8 @@ function Startnewchat(props) {
                     placeholder="Search here..."
                     onchange={onChangeSearch} />
             </div>
-            <div>
+            <div style={{flex: 1, overflow: 'scroll'}}>
+                <div>
                 {
                     friends.filter(e => !search || getname(e).match(new RegExp(search, "i"))).map((friend, i) => 
                         <Friend 
@@ -50,6 +51,7 @@ function Startnewchat(props) {
                             onChatSelect={createChatRoom(props)}
                         />)
                 }
+                </div>
             </div>
         </div>
     );

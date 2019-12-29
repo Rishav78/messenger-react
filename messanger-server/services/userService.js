@@ -16,7 +16,7 @@ exports.add = async (data) => {
 
 exports.userInformation = async _id => {
     try {
-        const user = await users.findById(_id, { firstname: 1, lastname: 1 });
+        const user = await users.findById(_id, { firstname: 1, lastname: 1, imageid: 1 });
         return { success: true, user };
     } catch (err) {
         return { success:  false };

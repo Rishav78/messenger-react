@@ -12,8 +12,8 @@ function Chat(props) {
         <div tabIndex="-1" onClick={props.onclick}>
             <div className="card" style={{backgroundColor: props.selectedchat ? '#ebebeb':null}}>
                 <div className="dp">
-                    <div style={{width: 49, height: 49}}>
-                        <img src={'props.dp'} />
+                    <div style={{width: 49, height: 49, borderRadius: '50%', overflow: 'hidden'}}>
+                        <img style={{ width: '100%', height: '100%' }} src={`http://localhost:8000/profilepicture/?id=${props.data.chat.chattype ? props.data.chat.imageid : props.data.chat.receiver[0].imageid}`} />
                     </div>
                 </div>
                 <div className="chatinfomation">

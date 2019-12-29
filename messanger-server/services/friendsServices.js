@@ -21,6 +21,7 @@ exports.searchNewFriend = async (_id) => {
     const usrs =  await users.find({ '$and': query }, {
         firstname:1,
         lastname: 1,
+        imageid: 1,
     });
     return usrs;
 }
@@ -42,6 +43,7 @@ exports.getfriends = async _id => {
         'select': {
             firstname: 1,
             lastname: 1,
+            imageid: 1,
         },
         'options': { 'sort': { 'firstname': 1 } } 
     });

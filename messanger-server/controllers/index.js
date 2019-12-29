@@ -4,6 +4,8 @@ const validtoken = require('./validTokenController');
 const chats = require('./chatController');
 const friends = require('./friendsController');
 const messages = require('./messagesController');
+const profilepicture = require('./profilePicController');
+const user = require('./userController');
 
 module.exports = {
     login,
@@ -12,4 +14,6 @@ module.exports = {
     chats,
     friends,
     messages,
+    profilepicture,
+    user,
 }

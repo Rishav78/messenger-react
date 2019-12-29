@@ -11,9 +11,9 @@ exports.createPrivateChatroom = async chatmembers => {
             select: {
                 firstname: 1,
                 lastname: 1,
+                imageid: 1,
             }
-        });
-        console.log(chat)
+        }).execPopulate();
         chatmembers.forEach( async _id => {
             await users.updateOne({ _id }, { '$push': { 'activeChats': chat._id } });
         });
@@ -33,6 +33,7 @@ exports.ongoningChats = async _id => {
                         'select': {
                             firstname: 1,
                             lastname: 1,
+                            imageid: 1
                         }
                     },
                     {
@@ -83,6 +84,7 @@ exports.chatInformation = async _id => {
                     select: {
                         firstname: 1,
                         lastname: 1,
+                        imageid: 1,
                         phone: 1,
                     }
                 });

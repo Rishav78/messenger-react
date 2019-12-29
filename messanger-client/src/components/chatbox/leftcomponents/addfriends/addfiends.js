@@ -39,7 +39,7 @@ function Addfriends(props) {
     },[])
 
     return (
-        <div>
+        <div style={{ display: 'flex', height: '100%', flexDirection: 'column'}}>
             <div>
                 <Header 
                     tittle="Add Friend"
@@ -51,7 +51,7 @@ function Addfriends(props) {
                     placeholder="search here..."
                     onchange={onChangeSearch} />
             </div>
-            <div>
+            <div style={{flex: 1, overflow: 'scroll'}}>
                 <div>
                     { users.filter(e => !search || getname(e).match(new RegExp(search, "i"))).map((user, i) => 
                         <Availableuser

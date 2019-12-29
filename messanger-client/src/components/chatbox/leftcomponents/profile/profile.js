@@ -1,26 +1,62 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import AddAPhotoSharpIcon from '@material-ui/icons/AddAPhotoSharp';
 import EditSharpIcon from '@material-ui/icons/EditSharp';
 import Header from '../Header/header'
 
+function uploadImage(onImageChange) {
+    return async function(input) {
+        const Token = localStorage.getItem('Token1');
+        const image = Array.from(input.target.files);
+        const form = new FormData();
+        form.append("filename", image[0]);
+        const res = await fetch(`http://localhost:8000/profilepicture/?Token=${Token}`,{
+            method: 'POST',
+            body: form,
+        });
+        const data = await res.json();
+        onImageChange(data.filename);
+    }
+}
+
+function getUserInformation(io, onChangeUser, onImageChange) {
+    const Token = localStorage.getItem('Token1');
+    io.emit('loged-user-information',{ Token }, data => {
+        const { user } = data;
+        console.log(user)
+        onChangeUser(user);
+        onImageChange(user.imageid);
+    })
+}
+
 function Profile(props) {
     const [showchangedp, onchange] = useState(false);
+    const [image, onImageChange]  = useState('#');
+    const [user, onChangeUser] = useState({});
+    const imageinput = React.createRef();
+
+    useEffect(() => {
+        const { io } = props;
+        getUserInformation(io, onChangeUser, onImageChange);
+    },[])
+
     return (
         <div>
             <Header
                     tittle="Profile"
-                    changeComponent={props.changeComponent}
+                    onBack={props.changeComponent}
             />
             <div>
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 20, marginBottom: 20}}>
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 200, height: 200, borderRadius: '50%', overflow: 'hidden', position: 'relative'}}
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 200, height: 200, borderRadius: '50%', overflow: 'hidden', position: 'relative', cursor: 'pointer'}}
                         onMouseOver={() => onchange(true)}
                         onMouseOut={() => onchange(false)}
+                        onClick={(e) => imageinput.current.click() }
                     >
-                        <img src="sdf" style={{ width: '100%', height: '100%', position: 'absolute'}} />
+                        <input ref={imageinput} onChange={uploadImage(onImageChange)} name="filename" type="file" style={{display: 'none'}} />
+                        <img src={`http://localhost:8000/profilepicture/?id=${image}`} style={{ width: '100%', height: '100%'}} />
                         <span style={{ width: '100%', height: '100%', textAlign: 'center'}}>
                             {showchangedp ?
-                                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.2)'}}>
+                                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.2)', position: 'absolute', zIndex: 100}}>
                                     <div style={{ marginBottom: 6}}>
                                         <AddAPhotoSharpIcon
                                             style={{ color: 'white' }}
@@ -45,7 +81,7 @@ function Profile(props) {
                     <div>
                         <div style={{ display: 'flex', flexDirection: 'row' }}>
                             <div style={{ flex: 1}}>
-                                <span style={{ fontSize: 19}}>hii</span>
+                                <span style={{ fontSize: 19}}>{user.firstname + ' ' + user.lastname}</span>
                             </div>
                             <div>
                                 <span style={{cursor: 'pointer'}}

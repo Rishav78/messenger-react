@@ -24,7 +24,7 @@ export default class SignupForm extends Component {
         let userInfo = {...this.state};
         auth.Signup(userInfo, (res) => {
             if(!res.success) return alert(res.err_msg);
-            this.props.history.push('/');
+            // this.props.history.push('/');
         });
     }
     handleFirstnameChange = () => {

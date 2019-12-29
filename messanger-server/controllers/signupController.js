@@ -6,7 +6,7 @@ exports.signup = async (req, res) => {
     if(!firstname || !lastname || !phone || !password)
         return res.json({ 'success': false, 'err_msg': 'empty fields' });
     
-    const data = await services.user.add({ firstname, lastname, phone, password});
+    const data = await services.user.add({ firstname, lastname, phone, password, imageid: 'default.png'});
 
     res.json(data);
 }

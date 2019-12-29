@@ -7,6 +7,9 @@ let userSchema = new mongoose.Schema({
     lastname: {
         type: String
     },
+    imageid: {
+        type: String
+    },
     phone: {
         type: String,
     },

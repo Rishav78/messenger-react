@@ -14,16 +14,7 @@ function goToOngoingChat(props, cb) {
 function Left(props) {
     const [component, changeComponent] = useState(0);
     return(
-        <Profie />        
-
-    )
-}
-
-export default Left;
-
-
-/*
-component == 0 ?
+        component == 0 ?
         <OngoingChats 
             io={props.io}
             selectedchat={props.selectedchat}
@@ -35,8 +26,21 @@ component == 0 ?
             io={props.io}
             onChatSelect={goToOngoingChat(props, changeComponent)}
             changeComponent={changeComponent}
-        /> : <Addfriends
+        /> : component === 2 ? <Addfriends
                 io={props.io}
                 changeComponent={changeComponent}
-            />
+            /> :
+        <Profie
+            io={props.io}
+            changeComponent={changeComponent}
+        />        
+
+    )
+}
+
+export default Left;
+
+
+/*
+
             */

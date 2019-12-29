@@ -12,10 +12,11 @@ function OngoingChats(props) {
     const chats = props.chats && props.chats.chats.filter(e => !search || getname(e).match(new RegExp(search, "i")))
     console.log(chats)
     return (
-        <div>
+        <div style={{ display: 'flex', height: '100%', flexDirection: 'column'}}>
             <div>
                 <Header
                     changeComponent={props.changeComponent}
+                    io={props.io}
                 />
             </div>
             <div>
@@ -24,7 +25,8 @@ function OngoingChats(props) {
                     placeholer="Search here..."
                 />
             </div>
-            <div>
+            <div style={{flex: 1, overflow: 'scroll'}}>
+                <div>
                 {
                     chats ? chats.map((chat, i) => 
                         <Chat 
@@ -34,6 +36,7 @@ function OngoingChats(props) {
                             selectedchat={props.selectedchat === i}
                         />) : null
                 }
+                </div>
             </div>
         </div>
     );

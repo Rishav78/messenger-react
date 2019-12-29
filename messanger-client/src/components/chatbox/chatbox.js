@@ -47,7 +47,6 @@ function createChatRoom(_id, chats, setchats, changemessages, onchatselect){
             const { chatmembers, ...rest } = chat;
             rest.sender = id;
             rest.receiver = chatmembers.filter( usr => usr._id != id);
-            console.log(rest);
             chats.chats = [...chats.chats, rest];
             setchats(chats);
             onchatselect(chats.chats.length-1);

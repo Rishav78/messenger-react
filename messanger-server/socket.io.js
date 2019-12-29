@@ -38,6 +38,8 @@ module.exports = server => {
 
         socket.on('chat-already-going-on', controllers.chats.alreadyGoingon);
 
+        socket.on('loged-user-information', controllers.user.getUserInformation);
+
         socket.on('send-message', async (data, cb) => {
             const message = await controllers.messages.saveMessage(data, cb);
             data.receiver.forEach( e => {

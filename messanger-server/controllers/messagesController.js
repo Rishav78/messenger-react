@@ -18,6 +18,6 @@ exports.saveMessage = async (data, cb) => {
 
     const { _id, message } = data;
     const msg = await services.messages.saveMessage(_id, message, user.user._id);
-    cb({ authenticated, ...msg });
+    cb({ authenticated, ...msg, _id });
     return msg;
 }

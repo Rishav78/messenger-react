@@ -4,6 +4,7 @@ const http = require('http').createServer(app);
 const path = require('path');
 const io = require('./socket.io')(http);
 const cors = require('cors');
+const upload = require('express-fileupload');
 const port = 8000;
 const whitelist = ['http://localhost:3000'];
 const corsOptions = {
@@ -17,6 +18,8 @@ const corsOptions = {
   },
 }
 app.use(cors(corsOptions));
+
+app.use(upload());
 
 app.use('/static', express.static(path.join(__dirname, 'assets', 'images')));
 
