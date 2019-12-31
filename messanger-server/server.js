@@ -27,7 +27,7 @@ app.use(express.json()); //A new body object containing the parsed data is popul
 app.use(express.urlencoded({extended: true})); 
 
 app.use((req, res, next) => {
-  // console.log(req.url);
+  console.log(req.url);
   next();
 });
 

@@ -14,8 +14,8 @@ exports.getmessages = async _id => {
                     populate: {
                         path: 'sender',
                         select: {
-                            firstName: 1,
-                            lastName: 1,
+                            firstname: 1,
+                            lastname: 1,
                         },
                     },
                 });
@@ -27,7 +27,7 @@ exports.getmessages = async _id => {
 
 exports.saveMessage = async (_id, message, sender) => {
     try {
-        const newmessage = new messages({ sender, message });
+        const newmessage = new messages({ sender, message, status: 1 });
         let msg = await newmessage.save();
         await chats.updateOne({ _id }, { '$push': { 'messages': msg._id } });
         msg = await msg.populate({

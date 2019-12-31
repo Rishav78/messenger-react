@@ -6,9 +6,8 @@ exports.validToken = (req, res) => {
     res.json(valid);
 }
 
-// exports.validToken = (data, cb) => {
-//     const { Token } = data;
-//     const valid = auth.validToken(Token);
-//     console.log(valid);
-//     cb(valid);
-// }
+exports.validtoken = data => {
+    const {Token} = data;
+    const valid = auth.validToken(Token);
+    return valid;
+}

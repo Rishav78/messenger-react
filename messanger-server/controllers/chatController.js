@@ -32,7 +32,6 @@ exports.alreadyGoingon = async (data, cb) => {
     const { _id } = user.user;
     let { activeChats:chat } = await services.chats.alreadyGoingon(_id, data._id);
     chat = chat.length > 0 ? chat[0] : null;
-    console.log(chat)
     return cb({ authenticated, chat });
 
 }
