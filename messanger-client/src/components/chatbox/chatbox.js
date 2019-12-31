@@ -76,14 +76,22 @@ function logedUserInformation(setUserInfo) {
     });
 }
 
-// function updateLastMessage() {
-
-// }
+function updateLastMessage(chats, setChats) {
+    return function(message) {
+        const newchats = { _id: chats._id };
+        newchats.chats = chats.chats.map(e => {
+            if(e._id == message._id) e.messages = [message.msg];
+            return e;
+        });
+        setChats(newchats);
+    }
+}
 
 function Chatbox(props) {
     const [selectedChat, onChatSelect] = useState(null);
     const [chats, setChats] = useState(null);
     const [user, setUserInfo] = useState(null);
+    const [userlastmessage, onChangeLastMessage] = useState(null);
 
     useEffect(() => {
         authentication(props);
@@ -100,6 +108,7 @@ function Chatbox(props) {
                 <Left 
                     io={io}
                     chats={chats} 
+                    userlastmessage={userlastmessage}
                     selectedchat={selectedChat}
                     onChatSelect={selectChatAndGetMessages(props, onChatSelect, chats, setChats)}
                 />
@@ -107,6 +116,7 @@ function Chatbox(props) {
             <div className="right" style={styles.right}>
                 <Right
                     chat={selectedChat !== null ? chats.chats[selectedChat] : null}
+                    updateLastMessage={updateLastMessage(chats, setChats)}
                     io={io}
                 />
             </div>

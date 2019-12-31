@@ -6,6 +6,7 @@ function Right(props) {
     return (
         props.chat ? <Chatprofile
             chat={props.chat}
+            updateLastMessage={props.updateLastMessage}
             io={props.io}
         /> : <WelcomePage />
     );

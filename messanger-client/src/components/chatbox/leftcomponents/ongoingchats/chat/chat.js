@@ -11,16 +11,19 @@ function Chat(props) {
     const [lastmessage, onChangeLastMessage] = useState({});
     const [lastupdate, onChangeLastUpdate] = useState('');
 
-    props.io.on('new-message', (data) => {
-        if(props.data.chat._id !== data._id) return;
-        const { msg } = data;
-        const message = {
-            sender: msg.sender.firstname,
-            message: msg.message
-        };
-        onChangeLastMessage(message);
-        onChangeLastUpdate(getTimePeriod(msg.updatedAt))
-    })
+    useEffect(() => {
+        props.io.on('new-message', (data) => {
+            if(props.data.chat._id !== data._id) return;
+            const { msg } = data;
+            const message = {
+                sender: msg.sender.firstname,
+                message: msg.message
+            };
+            onChangeLastMessage(message);
+            onChangeLastUpdate(getTimePeriod(msg.updatedAt))
+        });
+        return () => props.io.removeAllListeners('new-message');
+    },[props]);
 
     useEffect(() => {
         if(props.data.chat.messages.length > 0) {
@@ -29,8 +32,8 @@ function Chat(props) {
                 message: props.data.chat.messages[0].message
             };
             onChangeLastMessage(data);
+            onChangeLastUpdate(getTimePeriod(props.data.chat.messages[0].createdAt));
         }
-        onChangeLastUpdate(getTimePeriod(props.data.chat.updatedAt))
     },[props])
 
     return (

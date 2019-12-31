@@ -19,6 +19,7 @@ function Left(props) {
             io={props.io}
             selectedchat={props.selectedchat}
             chats={props.chats}
+            userlastmessage={props.userlastmessage}
             onChatSelect={props.onChatSelect}
             changeComponent={changeComponent}
         /> : component === 1 ? 

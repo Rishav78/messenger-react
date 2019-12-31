@@ -34,6 +34,7 @@ function OngoingChats(props) {
                             data={{ chat, _id:chats._id }}
                             onclick={ () => props.onChatSelect(i)}
                             selectedchat={props.selectedchat === i}
+                            userlastmessage={props.userlastmessage}
                         />) : null
                 }
                 </div>

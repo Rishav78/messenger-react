@@ -11,15 +11,17 @@ function pushMessageToStack(messages, message, onChangeMessage, sender) {
     return messageinfo;
 }
 
-function sendMessage(io, chat, messages, message, onChangeMessage, user) {
+function sendMessage(io, chat, messages, message, onChangeMessage, user, updateLastMessage) {
     return function(e) {
         if(e.keyCode !== 13) return;
         const Token = localStorage.getItem('Token1');
         const { receiver, _id } = chat;
         const messageinfo = pushMessageToStack(messages, message, onChangeMessage, user);
+        updateLastMessage({ _id, msg: messageinfo })
         io.emit('send-message',{ _id, receiver, message, Token, refid: messageinfo.refid },(data) => {
             messageinfo.status = 1;
             onChangeMessage([...messages, messageinfo]);
+            updateLastMessage({ _id, msg: messageinfo })
         });
         return io.removeAllListeners('send-message');
     }
@@ -113,7 +115,7 @@ function Chatpofile(props) {
                     <input type="text" 
                         value={message} 
                         onChange={(e) => onchange(e.target.value)} 
-                        onKeyDown={sendMessage(props.io, props.chat, messages, message, onChangeMessage, user)}
+                        onKeyDown={sendMessage(props.io, props.chat, messages, message, onChangeMessage, user, props.updateLastMessage)}
                         onKeyUp={setTyping(onChangeTyping, onchange)}
                         />
                 </span>
