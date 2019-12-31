@@ -7,7 +7,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: #d6dbd7;
 }
-
+::-webkit-scrollbar {
+  width: 0px;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

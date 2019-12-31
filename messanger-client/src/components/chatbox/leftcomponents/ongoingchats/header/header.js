@@ -17,6 +17,7 @@ function Header(props) {
         const { io } = props;
         getUserInformation(io, onImageChange);
     },[props])
+
     return(
         <header className="header">
             <div style={{flex: 1}}>

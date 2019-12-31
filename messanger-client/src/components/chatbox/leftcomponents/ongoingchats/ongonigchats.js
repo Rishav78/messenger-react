@@ -30,6 +30,7 @@ function OngoingChats(props) {
                     chats ? chats.map((chat, i) => 
                         <Chat 
                             key={i}
+                            io={props.io}
                             data={{ chat, _id:chats._id }}
                             onclick={ () => props.onChatSelect(i)}
                             selectedchat={props.selectedchat === i}

@@ -16,14 +16,6 @@ async function authentication(props) {
     io.emit('new-connection', { Token });
 }
 
-function getmessages(_id, cb, props) {
-    const Token = localStorage.getItem('Token1');
-    if(!Token) return props.history.push('/');
-    io.emit('get-messages', { _id, Token }, (data) => {
-        cb(data.message.messages);
-    })
-}
-
 function getChats(cb) {
     const Token = localStorage.getItem('Token1');
     io.emit('get-ongoing-chats', { Token }, data => {
@@ -39,7 +31,7 @@ function getChats(cb) {
     });
 }
 
-function createChatRoom(_id, chats, setchats, changemessages, onchatselect){
+function createChatRoom(_id, chats, setchats, onchatselect){
     const Token = localStorage.getItem('Token1');
     io.emit('create-private-chat-room', { Token, _id }, data => {
         const { chat, _id:id } = data;
@@ -49,66 +41,72 @@ function createChatRoom(_id, chats, setchats, changemessages, onchatselect){
             chats.chats = [...chats.chats, rest];
             setchats(chats);
             onchatselect(chats.chats.length-1);
-            changemessages([])
     });
 }
 
-function chatAlreadyGoingon(_id, chats, setchats, changemessages, onchatselect, props) {
+function chatAlreadyGoingon(_id, chats, setchats, onchatselect, props) {
     const Token = localStorage.getItem('Token1');
     io.emit('chat-already-going-on', { _id, Token }, (data) => {
         const { chat } = data;
-        if(!chat) return createChatRoom(_id, chats, setchats, changemessages, onchatselect);
+        if(!chat) return createChatRoom(_id, chats, setchats, onchatselect);
         for(let i=0;i<chats.chats.length;i++) {
             if(chats.chats[i]._id === chat._id){
-                selectChatAndGetMessages(props,onchatselect, chats, changemessages, setchats)(i);
+                selectChatAndGetMessages(props,onchatselect, chats, setchats)(i);
                 break;
             }
         }
     })
 }
 
-function selectChatAndGetMessages(props, onchatselect, chats, changemessages, setchats) {
+function selectChatAndGetMessages(props, onchatselect, chats, setchats) {
     return function(chatno, _id) {
         if(chatno === null) {
-            chatAlreadyGoingon( _id, chats, setchats, changemessages, onchatselect, props);
+            chatAlreadyGoingon( _id, chats, setchats, onchatselect, props);
         } else {
             onchatselect(chatno);
             const { _id } = chats.chats[chatno];
-            getmessages(_id, changemessages, props);
         }
     }
 }
 
+function logedUserInformation(setUserInfo) {
+    const Token = localStorage.getItem('Token1');
+    io.emit('loged-user-information', { Token }, data => {
+        setUserInfo(data.user);
+    });
+}
+
+// function updateLastMessage() {
+
+// }
+
 function Chatbox(props) {
     const [selectedChat, onChatSelect] = useState(null);
-    const [messages, onChangeMessage] = useState([]);
     const [chats, setChats] = useState(null);
+    const [user, setUserInfo] = useState(null);
+
     useEffect(() => {
         authentication(props);
         getChats(setChats);
     },[props])
-    io.on('new-message', (data) => {
-        if(selectedChat!==null && chats.chats[selectedChat]._id === data._id) {
-            const newMessages = [...messages, data.msg];
-            onChangeMessage(newMessages);
-        }
-    })
+
+    useEffect(() => {
+        logedUserInformation(setUserInfo)
+    },[]);
 
     return (
         <div style={styles.container}>
             <div className="left" style={styles.left}>
                 <Left 
                     io={io}
-                    chats={chats}
+                    chats={chats} 
                     selectedchat={selectedChat}
-                    onChatSelect={selectChatAndGetMessages(props, onChatSelect, chats, onChangeMessage, setChats)}
+                    onChatSelect={selectChatAndGetMessages(props, onChatSelect, chats, setChats)}
                 />
             </div>
             <div className="right" style={styles.right}>
                 <Right
                     chat={selectedChat !== null ? chats.chats[selectedChat] : null}
-                    messages={messages}
-                    onChangeMessages={onChangeMessage}
                     io={io}
                 />
             </div>
