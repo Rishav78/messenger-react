@@ -3,17 +3,26 @@ import Friend from './friend/friend';
 import Searchbar from '../searchbar/searchbar';
 import Header from '../Header/header';
 
+async function fetchWrapper(url) {
+    const Token = localStorage.getItem('Token1');
+    const res = await fetch(url ,{
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${Token}`
+        }
+    });
+    const data = await res.json();
+    return data;
+}
+
 function getname(friend) {
     return friend.firstname+' '+friend.lastname;
 }
 
-function getfriends(props, cb) {
-    const { io } = props;
-    const Token = localStorage.getItem('Token1');
-    io.emit('get-friends', { Token }, data => {
-        const { friends } = data;
-        cb(friends);
-    });
+async function getfriends(cb) {
+    const url = 'http://localhost:8000/friends';
+    const { friends } = await fetchWrapper(url);
+    cb(friends);
 }
 
 function createChatRoom(props) {
@@ -25,9 +34,15 @@ function createChatRoom(props) {
 function Startnewchat(props) {
     const [friends, onChangeFriends] = useState([]);
     const [search, onChangeSearch] = useState('');
+
+    
     useEffect(() => {
-        getfriends(props, onChangeFriends);
+
+        getfriends(onChangeFriends);
+
     },[props])
+
+
     return (
         <div style={{ display: 'flex', height: '100%', flexDirection: 'column'}}>
             <div>
@@ -56,5 +71,17 @@ function Startnewchat(props) {
         </div>
     );
 }
+
+/*
+{
+                    friends.filter(e => !search || getname(e).match(new RegExp(search, "i"))).map((friend, i) => 
+                        <Friend 
+                            key={i}
+                            data={friend}
+                            onChatSelect={createChatRoom(props)}
+                        />)
+                }
+                */
+
 
 export default Startnewchat;

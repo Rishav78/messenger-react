@@ -1,14 +1,11 @@
 const services = require('../services');
+const jwt = require('jsonwebtoken');
 const auth = require('../auth/validToken');
 
-
-exports.getOngoingChats = async (data, cb) => {
-    const { Token } = data;
-    const { authenticated, user } = auth.validToken(Token);
-    if(!authenticated) return cb({authenticated: false});
-    const { _id } = user.user;
-    const chats = await services.chats.ongoningChats(_id);
-    cb({ authenticated: true, chats, _id });
+exports.existingChats = async (req , res) => {
+    const { user:_id } = req;
+    const chats = await services.chats.existingChats(_id);
+    res.json({ chats, _id });
 }
 
 exports.createPrivateChatroom = async (data, cb) => {
@@ -23,17 +20,12 @@ exports.createPrivateChatroom = async (data, cb) => {
     cb({ ...res, _id });
 }
 
-exports.alreadyGoingon = async (data, cb) => {
-    const { Token } = data;
-    const { authenticated, user } = auth.validToken(Token)
-
-    if(!authenticated) return cb({authenticated: false});
-
-    const { _id } = user.user;
-    let { activeChats:chat } = await services.chats.alreadyGoingon(_id, data._id);
-    chat = chat.length > 0 ? chat[0] : null;
-    return cb({ authenticated, chat });
-
+exports.chatExists = async (req, res) => {
+    const { id } = req.query;
+    const { user:_id } = req;
+    const response = await services.chats.chatExists(_id, id);
+    const chat = response.length > 0 ? response[0] : null;
+    res.json({chat});
 }
 
 exports.chatInformation = async (data, cb) => {

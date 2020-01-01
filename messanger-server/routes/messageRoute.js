@@ -1,7 +1,7 @@
 const router = require('express').Router();
-const auth = require('../auth/validToken');
 const controllers = require('../controllers');
+const auth = require('../auth/validToken');
 
-router.get('/', auth.verifyToken, controllers.validtoken.validToken);
+router.get('/', auth.verifyToken, controllers.messages.getmessages);
 
 module.exports = router;

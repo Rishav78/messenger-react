@@ -20,11 +20,9 @@ exports.addnewfriend = async (data, cb) => {
     cb({ authenticated, success });
 }
 
-exports.getfriends = async (data, cb) => {
-    const { Token } = data;
-    const { authenticated, user} = auth.validToken(Token);
-    if(!authenticated) return cb({ authenticated });
-    const { _id } = user.user;
-    const { friends } = await services.friends.getfriends(_id)
-    cb({ authenticated, friends });
+exports.getfriends = async (req, res) => {
+    const { user:_id } = req;
+    const { friends } = await services.friends.getfriends(_id);
+    console.log( friends);
+    return res.json({ friends });
 }

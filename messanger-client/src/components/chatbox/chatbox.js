@@ -6,37 +6,45 @@ import styles from './chatboxstyle.js';
 
 const io = SocketIO('http://localhost:8000');
 
+
+async function fetchWrapper(url) {
+    const Token = localStorage.getItem('Token1');
+    const res = await fetch(url ,{
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${Token}`
+        }
+    });
+    const data = await res.json();
+    return data;
+}
+
 async function authentication(props) {
     const Token = localStorage.getItem('Token1');
-    if(!Token) return props.history.push('/');
-    const res = await fetch(`http://localhost:8000/validtoken/?Token=${Token}`);
-    const data = await res.json();
-    const { authenticated } = data;
+    const url = 'http://localhost:8000/validtoken';
+    const { authenticated } = await fetchWrapper(url);
     if(!authenticated) return props.history.push('/');
     io.emit('new-connection', { Token });
 }
 
-function getmessages(_id, cb, props) {
-    const Token = localStorage.getItem('Token1');
-    if(!Token) return props.history.push('/');
-    io.emit('get-messages', { _id, Token }, (data) => {
-        cb(data.message.messages);
-    })
+async function getmessages(_id, cb) {
+    const url = `http://localhost:8000/messages?id=${_id}`;
+    const { messages } = await fetchWrapper(url);
+    cb(messages);
 }
 
-function getChats(cb) {
-    const Token = localStorage.getItem('Token1');
-    io.emit('get-ongoing-chats', { Token }, data => {
-        const { _id } = data;
-        const { activeChats } = data.chats;
-        const chats = activeChats.map( e => {
-            const { chatmembers, ...rest} = e;
-            rest.sender = _id;
-            rest.receiver = chatmembers.filter( usr => usr._id !== _id);
-            return rest;
-        });
-        cb({chats, _id});
+async function getChats(cb) {
+    const url = `http://localhost:8000/chat`;
+    const data = await fetchWrapper(url);
+    const { _id } = data;
+    const { activeChats } = data.chats;
+    const chats = activeChats.map( e => {
+        const { chatmembers, ...rest} = e;
+        rest.sender = _id;
+        rest.receiver = chatmembers.filter( usr => usr._id !== _id);
+        return rest;
     });
+    cb({chats, _id});
 }
 
 function createChatRoom(_id, chats, setchats, changemessages, onchatselect){
@@ -53,24 +61,20 @@ function createChatRoom(_id, chats, setchats, changemessages, onchatselect){
     });
 }
 
-function chatAlreadyGoingon(_id, chats, setchats, changemessages, onchatselect, props) {
-    const Token = localStorage.getItem('Token1');
-    io.emit('chat-already-going-on', { _id, Token }, (data) => {
-        const { chat } = data;
-        if(!chat) return createChatRoom(_id, chats, setchats, changemessages, onchatselect);
-        for(let i=0;i<chats.chats.length;i++) {
-            if(chats.chats[i]._id === chat._id){
-                selectChatAndGetMessages(props,onchatselect, chats, changemessages, setchats)(i);
-                break;
-            }
-        }
-    })
-}
-
 function selectChatAndGetMessages(props, onchatselect, chats, changemessages, setchats) {
-    return function(chatno, _id) {
+    return async function(chatno, _id) {
         if(chatno === null) {
-            chatAlreadyGoingon( _id, chats, setchats, changemessages, onchatselect, props);
+            const url = `http://localhost:8000/chat/exist/?id=${_id}`
+            const { chat } = await fetchWrapper(url);
+            if(!chat) {
+                return createChatRoom(_id, chats, setchats, changemessages, onchatselect);
+            }
+            for(let i=0;i<chats.chats.length;i++) {
+                if(chats.chats[i]._id === chat._id){
+                    selectChatAndGetMessages(props,onchatselect, chats, changemessages, setchats)(i);
+                    break;
+                }
+            }
         } else {
             onchatselect(chatno);
             const { _id } = chats.chats[chatno];
@@ -116,11 +120,7 @@ function Chatbox(props) {
         io.on('new-message', newMessage)
 
         return () => io.off('new-message', newMessage);
-    }, [chats]);
-
-    useEffect(() => {
-        console.log(chats);
-    })
+    }, [chats, messages]);
 
     return (
         <div style={styles.container}>

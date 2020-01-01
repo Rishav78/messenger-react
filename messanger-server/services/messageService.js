@@ -3,7 +3,7 @@ const chats = require('../models/chats');
 
 exports.getmessages = async _id => {
     try {
-        const message = await chats.findById(_id, { messages: 1 })
+        const { messages } = await chats.findById(_id, { messages: 1 })
                 .populate({
                     path: 'messages',
                     options: {
@@ -19,7 +19,7 @@ exports.getmessages = async _id => {
                         },
                     },
                 });
-        return { success: true, message };
+        return { success: true, messages };
     } catch (err) {
         return { success: false };
     }

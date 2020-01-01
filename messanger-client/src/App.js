@@ -9,7 +9,12 @@ import ProtectedRoute from './components/protected/protected'
 async function authentication(cb) {
   const Token = localStorage.getItem('Token1');
   if(!Token) return cb(false);
-  const res = await fetch(`http://localhost:8000/validtoken/?Token=${Token}`);
+  const res = await fetch(`http://localhost:8000/validtoken`, {
+    method: 'GET',
+    headers: {
+        'Authorization': `Bearer ${Token}`
+    }
+  });
   const data = await res.json();
   const { authenticated } = data;
   cb(authenticated);

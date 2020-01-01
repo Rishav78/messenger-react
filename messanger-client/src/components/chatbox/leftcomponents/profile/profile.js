@@ -9,9 +9,12 @@ function uploadImage(onImageChange) {
         const image = Array.from(input.target.files);
         const form = new FormData();
         form.append("filename", image[0]);
-        const res = await fetch(`http://localhost:8000/profilepicture/?Token=${Token}`,{
+        const res = await fetch(`http://localhost:8000/profilepicture`,{
             method: 'POST',
             body: form,
+            headers: {
+                'Authorization': `Bearer ${Token}`
+            }
         });
         const data = await res.json();
         onImageChange(data.filename);

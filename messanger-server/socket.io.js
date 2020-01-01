@@ -27,17 +27,9 @@ module.exports = server => {
 
         socket.on('add-new-friend', controllers.friends.addnewfriend);
 
-        socket.on('get-ongoing-chats', controllers.chats.getOngoingChats);
-
-        socket.on('get-friends', controllers.friends.getfriends);
-
         socket.on('create-private-chat-room', controllers.chats.createPrivateChatroom);
 
         socket.on('get-chat-information', controllers.chats.chatInformation);
-
-        socket.on('get-messages', controllers.messages.getmessages);
-
-        socket.on('chat-already-going-on', controllers.chats.alreadyGoingon);
 
         socket.on('loged-user-information', controllers.user.getUserInformation);
 

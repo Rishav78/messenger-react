@@ -26,10 +26,10 @@ app.use('/static', express.static(path.join(__dirname, 'assets', 'images')));
 app.use(express.json()); //A new body object containing the parsed data is populated on the request object after the middleware (i.e. req.body).
 app.use(express.urlencoded({extended: true})); 
 
-app.use((req, res, next) => {
-  console.log(req.url);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log(req.url);
+//   next();
+// });
 
 app.use('/', require('./routes'));
 

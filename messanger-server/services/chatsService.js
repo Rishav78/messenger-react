@@ -23,7 +23,7 @@ exports.createPrivateChatroom = async chatmembers => {
     }
 }
 
-exports.ongoningChats = async _id => {
+exports.existingChats = async _id => {
     const chats = await users.findById(_id, { activeChats: 1 })
         .populate({
             'path': 'activeChats',
@@ -56,7 +56,7 @@ exports.ongoningChats = async _id => {
     return chats;
 }
 
-exports.alreadyGoingon = async (_id, friendid) => {
+exports.chatExists = async (_id, friendid) => {
     const { activeChats } = await users.findById(_id, { 'activeChats': 1 })
             .populate({
                 path: 'activeChats',
