@@ -3,31 +3,35 @@ import AddAPhotoSharpIcon from '@material-ui/icons/AddAPhotoSharp';
 import EditSharpIcon from '@material-ui/icons/EditSharp';
 import Header from '../Header/header'
 
+
+async function fetchWrapper(url, method, body) {
+    const Token = localStorage.getItem('Token1');
+    const res = await fetch(url ,{ method, body,
+        headers: {
+            'Authorization': `Bearer ${Token}`
+        }
+    });
+    const data = await res.json();
+    return data;
+}
+
 function uploadImage(onImageChange) {
     return async function(input) {
-        const Token = localStorage.getItem('Token1');
         const image = Array.from(input.target.files);
         const form = new FormData();
+        const url = 'http://localhost:8000/profilepicture';
         form.append("filename", image[0]);
-        const res = await fetch(`http://localhost:8000/profilepicture`,{
-            method: 'POST',
-            body: form,
-            headers: {
-                'Authorization': `Bearer ${Token}`
-            }
-        });
-        const data = await res.json();
-        onImageChange(data.filename);
+        const { filename } = await fetchWrapper(url, 'POST', form);
+        onImageChange(filename);
     }
 }
 
-function getUserInformation(io, onChangeUser, onImageChange) {
-    const Token = localStorage.getItem('Token1');
-    io.emit('loged-user-information',{ Token }, data => {
-        const { user } = data;
-        onChangeUser(user);
-        onImageChange(user.imageid);
-    })
+async function getUserInformation(io, onChangeUser, onImageChange) {
+    const url = 'http://localhost:8000/user';
+    const user = await fetchWrapper(url);
+    const { imageid } = user;
+    onChangeUser(user);
+    onImageChange(user.imageid);
 }
 
 function Profile(props) {

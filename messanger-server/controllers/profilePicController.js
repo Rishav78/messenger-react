@@ -5,20 +5,15 @@ const path = require('path');
 
 
 exports.updateProfilePicture = (req, res) => {
-    const { Token } = req.query;
     const { files } = req;
-    const { authenticated, user} = auth.validToken(Token);
-    if(!authenticated) return cb({ authenticated });
-
-    if(!files) return {authenticated, success: false};
-
-    const { _id } = user.user;
+    if(!files) return res.json({ success: false });
+    const { user:_id } = req;
     const filename = files.filename.name;
     const extention = path.extname(filename);
-    files.filename.mv(path.join(__dirname, '..', 'assets', 'images', `${user.user._id}${extention}`), async function(err) {
+    files.filename.mv(path.join(__dirname, '..', 'assets', 'images', `${_id}${extention}`), async function(err) {
         if(err) throw err;
-        services.profilepic.updateProfilePicture(_id, `${user.user._id}${extention}`);
-        res.json({ filename: `${user.user._id}${extention}`, authenticated, success: true})
+        services.profilepic.updateProfilePicture(_id, `${_id}${extention}`);
+        res.json({ filename: `${_id}${extention}`, success: true})
     });
 }
 

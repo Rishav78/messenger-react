@@ -7,5 +7,6 @@ router.use('/profilepicture', require('./profilePicRoute'));
 router.use('/chat', require('./chatRoutes'));
 router.use('/messages', require('./messageRoute'));
 router.use('/friends', require('./friendsRoutes'));
+router.use('/user', require('./userRoute'));
 
 module.exports = router;

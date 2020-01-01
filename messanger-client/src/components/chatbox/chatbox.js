@@ -103,7 +103,7 @@ function Chatbox(props) {
     const [chats, setChats] = useState(null);
 
     function newMessage(data) {
-        console.log(data)
+        io.emit('message-deliver', data);
         updateLastMessages(chats, setChats)(data);
         if(selectedChat!==null && chats.chats[selectedChat]._id === data._id) {
             const newMessages = [...messages, data.msg];
@@ -112,8 +112,10 @@ function Chatbox(props) {
     }
 
     useEffect(() => {
+
         authentication(props);
         getChats(setChats);
+
     },[props])
    
     useEffect(() => {
@@ -121,6 +123,8 @@ function Chatbox(props) {
 
         return () => io.off('new-message', newMessage);
     }, [chats, messages]);
+
+
 
     return (
         <div style={styles.container}>

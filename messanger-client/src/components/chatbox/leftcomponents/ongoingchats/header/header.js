@@ -3,12 +3,22 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import ChatIcon from '@material-ui/icons/Chat';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
-function getUserInformation(io, onImageChange) {
+async function fetchWrapper(url) {
     const Token = localStorage.getItem('Token1');
-    io.emit('loged-user-information',{ Token }, data => {
-        const { user } = data;
-        onImageChange(user.imageid);
-    })
+    const res = await fetch(url ,{
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${Token}`
+        }
+    });
+    const data = await res.json();
+    return data;
+}
+
+async function getUserInformation(io, onImageChange) {
+    const url = 'http://localhost:8000/user';
+    const { imageid } = await fetchWrapper(url);
+    onImageChange(imageid);
 }
 
 function Header(props) {
