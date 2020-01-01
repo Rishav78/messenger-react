@@ -3,14 +3,22 @@ import Searchbar from '../searchbar/searchbar';
 import Availableuser from './availableusers/availableusers';
 import Header from '../Header/header';
 
-async function getusers(props, cb) {
-    const { io } = props;
+async function fetchWrapper(url) {
     const Token = localStorage.getItem('Token1');
-    if(!Token) return props.history.push('/');
-    io.emit('search-new-friend', { Token }, ({authenticated, users}) => {
-        if(!authenticated) return props.history.push('/');
-        cb(users)
-    })
+    const res = await fetch(url ,{
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${Token}`
+        }
+    });
+    const data = await res.json();
+    return data;
+}
+
+async function getusers(cb) {
+    const url = 'http://localhost:8000/friends/searchnew';
+    const { users } = await fetchWrapper(url);
+    cb(users);
 }
 
 function add(props, users, cb) {
@@ -35,7 +43,7 @@ function Addfriends(props) {
     const [users, onChangeUsers] = useState([]);
 
     useEffect(() => {
-        getusers(props, onChangeUsers);
+        getusers(onChangeUsers);
     },[props])
 
     return (

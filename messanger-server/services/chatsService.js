@@ -72,24 +72,5 @@ exports.chatExists = async (_id, friendid) => {
                     }
                 ]}
             });
-    
     return { activeChats };
-}
-
-exports.chatInformation = async _id => {
-    try {
-        const chat = await chats.findById(_id)
-                .populate({
-                    path: 'chatmembers',
-                    select: {
-                        firstname: 1,
-                        lastname: 1,
-                        imageid: 1,
-                        phone: 1,
-                    }
-                });
-        return { success: true, chat };
-    } catch (err) {
-        return { success: false };
-    }
 }

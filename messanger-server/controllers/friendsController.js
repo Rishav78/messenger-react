@@ -1,13 +1,10 @@
 const services = require('../services');
 const auth = require('../auth/validToken');
 
-exports.seachnewfriend = async (data, cb) => {
-    const { Token } = data;
-    const { authenticated, user} = auth.validToken(Token);
-    if(!authenticated) return cb({ authenticated });
-    const { _id } = user.user;
+exports.searchNewFriend = async (req, res) => {
+    const { user:_id } = req;
     const users = await services.friends.searchNewFriend(_id);
-    cb({ authenticated, users });
+    res.json({ users });
 }
 
 exports.addnewfriend = async (data, cb) => {

@@ -23,13 +23,9 @@ module.exports = server => {
             console.log('a user connected');
         })
 
-        socket.on('search-new-friend', controllers.friends.seachnewfriend);
-
         socket.on('add-new-friend', controllers.friends.addnewfriend);
 
         socket.on('create-private-chat-room', controllers.chats.createPrivateChatroom);
-
-        socket.on('get-chat-information', controllers.chats.chatInformation);
 
         socket.on('loged-user-information', controllers.user.getUserInformation);
 
@@ -38,8 +34,8 @@ module.exports = server => {
             receiver.forEach( e => {
                 const socketid = connected[e._id];
                 io.to(socketid).emit('user-typing', { _id, sender, status });
-            })
-        })
+            });
+        });
 
         socket.on('send-message', async (data, cb) => {
             const message = await controllers.messages.saveMessage(data, cb);

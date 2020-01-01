@@ -6,6 +6,6 @@ router.use('/signup', require('./signupRoute'));
 router.use('/profilepicture', require('./profilePicRoute'));
 router.use('/chat', require('./chatRoutes'));
 router.use('/messages', require('./messageRoute'));
-router.use('/friends', require('./friendsRoute'));
+router.use('/friends', require('./friendsRoutes'));
 
 module.exports = router;
