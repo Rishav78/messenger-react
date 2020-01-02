@@ -23,8 +23,8 @@ exports.createPrivateChatroom = async chatmembers => {
     }
 }
 
-exports.existingChats = async _id => {
-    const chats = await users.findById(_id, { activeChats: 1 })
+exports.existingChats = async _id => {   
+    const { activeChats:chats } = await users.findById(_id, { activeChats: 1 })
         .populate({
             'path': 'activeChats',
             'populate': [

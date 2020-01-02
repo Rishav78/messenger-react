@@ -1,26 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './header/header';
 import Messages from './messages/messages';
 
-function sendMessage(props, message, cb) {
-    return function(e) {
-        const { io } = props;
-        if(e.keyCode !== 13) return;
-        const Token = localStorage.getItem('Token1');
-        if(!Token) return;
-        const { receiver, _id } = props.chat;
-        io.emit('send-message',{ _id, receiver, message, Token },(data) => {
-            const newMessages = [...props.messages, data.msg];
-            props.onChangeMessages(newMessages);
-            props.updateLastMessages({_id, msg: data.msg});
-            cb('')
-        });
-    }
+async function fetchWrapper(url) {
+    const Token = localStorage.getItem('Token1');
+    const res = await fetch(url ,{
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${Token}`
+        }
+    });
+    const data = await res.json();
+    return data;
 }
 
 function Chatpofile(props) {
 
     const [message, onchange] = useState('');
+    const [user, onChangeUser] = useState({});
+
+    function msginfo() {
+        const { _id:sender } = user, status = 0, createdAt = new Date();
+        return { sender, status, createdAt, message };
+    }
+    
+
+    function sendMessage(e) {
+        const { io } = props;
+        if(e.keyCode !== 13) return;
+
+        const Token = localStorage.getItem('Token1');
+
+        const { receiver, _id } = props.chat;
+
+        const tempmsg = msginfo();
+        const tempmessages = [...props.messages, tempmsg];
+        props.onChangeMessages(tempmessages);
+
+        io.emit('send-message',{ _id, receiver, message, Token },(data) => {
+            tempmessages.pop();
+            const { msg } = data;
+            const newMessages = [...tempmessages, msg];
+            props.onChangeMessages(newMessages);
+            onchange('');
+        });
+    }
+
+    async function getuserinfo() {
+        const url = 'http://localhost:8000/user';
+        const user = await fetchWrapper(url);
+        onChangeUser(user);
+    }
+
+    useEffect(() => {
+
+        getuserinfo();
+
+    }, []);
 
     return ( 
         <div style={{ display:'flex', flexDirection: 'column', width: '100%', height: '100%' }}>
@@ -40,7 +76,7 @@ function Chatpofile(props) {
                     <input type="text" 
                         value={message} 
                         onChange={(e) => onchange(e.target.value)} 
-                        onKeyDown={sendMessage(props, message, onchange)}
+                        onKeyDown={sendMessage}
                         />
                 </span>
             </div>

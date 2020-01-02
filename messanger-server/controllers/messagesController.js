@@ -1,15 +1,20 @@
 const services = require('../services');
 const auth = require('../auth/validToken');
 
-// exports.getmessages = async (data, cb) => {
-//     const { Token } = data;
-//     const { authenticated, user} = auth.validToken(Token);
-//     if(!authenticated) return cb({ authenticated });
-//     const { _id } = user.user;
+exports.updateMessage = async data => {
+    const { Token } = data;
+    const { authenticated} = auth.validToken(Token);
+    if(!authenticated) return { authenticated };
 
-//     const msg = await services.messages.getmessages(data._id);
-//     cb({ authenticated, ...msg });
-// }
+    const { user, msg } = data;
+    const { _id:userid } = user;
+    const { _id } = msg;
+
+    const { success } = await services.messages.updateMessage(_id, userid);
+    if(!success) return { success };
+    msg.sendto.push(user);
+    return { msg, success };
+}
 
 exports.getmessages = async (req, res) => {
     const { id } = req.query;

@@ -7,10 +7,11 @@ import styles from './chatboxstyle.js';
 const io = SocketIO('http://localhost:8000');
 
 
-async function fetchWrapper(url) {
+async function fetchWrapper(url, method = 'GET', body) {
     const Token = localStorage.getItem('Token1');
     const res = await fetch(url ,{
-        method: 'GET',
+        method,
+        body,
         headers: {
             'Authorization': `Bearer ${Token}`
         }
@@ -37,14 +38,15 @@ async function getChats(cb) {
     const url = `http://localhost:8000/chat`;
     const data = await fetchWrapper(url);
     const { _id } = data;
-    const { activeChats } = data.chats;
+    const { chats:activeChats } = data;
     const chats = activeChats.map( e => {
         const { chatmembers, ...rest} = e;
         rest.sender = _id;
         rest.receiver = chatmembers.filter( usr => usr._id !== _id);
         return rest;
     });
-    cb({chats, _id});
+    console.log(chats);
+    cb(chats);
 }
 
 function createChatRoom(_id, chats, setchats, changemessages, onchatselect){
@@ -69,45 +71,62 @@ function selectChatAndGetMessages(props, onchatselect, chats, changemessages, se
             if(!chat) {
                 return createChatRoom(_id, chats, setchats, changemessages, onchatselect);
             }
-            for(let i=0;i<chats.chats.length;i++) {
-                if(chats.chats[i]._id === chat._id){
+            for(let i=0;i<chats.length;i++) {
+                if(chats[i]._id === chat._id){
                     selectChatAndGetMessages(props,onchatselect, chats, changemessages, setchats)(i);
                     break;
                 }
             }
         } else {
             onchatselect(chatno);
-            const { _id } = chats.chats[chatno];
+            const { _id } = chats[chatno];
             getmessages(_id, changemessages, props);
         }
     }
 }
 
-function updateLastMessages(chats, onChangeChats) {
-    return function(data) {
-        console.log('yess');
-        const newchats = { _id: chats._id };
-        newchats.chats = chats.chats.map(e => {
-            console.log(e._id === data._id && e);
-            if(data._id === e._id) e.messages = [data.msg];
-            return e;
-        });
-        onChangeChats(newchats);
-    }
-}
 
 
 function Chatbox(props) {
     const [selectedChat, onChatSelect] = useState(null);
     const [messages, onChangeMessage] = useState([]);
-    const [chats, setChats] = useState(null);
+    const [chats, setChats] = useState([]);
+    const [user, onChangeUser] = useState({});
+
+    async function getuserinfo() {
+        const url = 'http://localhost:8000/user';
+        const user = await fetchWrapper(url);
+        onChangeUser(user);
+    }
+
+    function updateMessageInformation(data) {
+        const { msg } = data;
+        const newMessage = messages.map( e => {
+            if(msg._id === e._id) return msg;
+            return e;
+        });
+        onChangeMessage(newMessage);
+    }
+
+    function updateLastMessages(data) {
+        const newchats = chats.map(e => {
+            if(data._id === e._id) e.messages = [data.msg];
+            return e;
+        });
+        setChats(newchats);
+    }
+    
 
     function newMessage(data) {
-        io.emit('message-deliver', data);
-        updateLastMessages(chats, setChats)(data);
-        if(selectedChat!==null && chats.chats[selectedChat]._id === data._id) {
-            const newMessages = [...messages, data.msg];
+        const {msg} = data;
+        console.log(data);
+        const Token = localStorage.getItem('Token1');
+        io.emit('message-delivered', { user, msg, Token });
+        if(selectedChat!==null && chats[selectedChat]._id === data._id) {
+            const newMessages = [...messages, msg];
             onChangeMessage(newMessages);
+        } else {
+            updateLastMessages(data);
         }
     }
 
@@ -117,6 +136,19 @@ function Chatbox(props) {
         getChats(setChats);
 
     },[props])
+
+    useEffect(() => {
+
+        io.on('update-message-information', updateMessageInformation);
+
+        if(messages.length === 0) return;
+        const newchats = [...chats];
+        newchats[selectedChat].messages = [messages[messages.length - 1]];
+        setChats(newchats);
+
+        return () => io.off('update-message-information', updateMessageInformation);
+
+    }, [messages]);
    
     useEffect(() => {
         io.on('new-message', newMessage)
@@ -124,7 +156,11 @@ function Chatbox(props) {
         return () => io.off('new-message', newMessage);
     }, [chats, messages]);
 
+    useState(() => {
 
+        getuserinfo();
+
+    },[]);
 
     return (
         <div style={styles.container}>
@@ -138,10 +174,9 @@ function Chatbox(props) {
             </div>
             <div className="right" style={styles.right}>
                 <Right
-                    chat={selectedChat !== null ? chats.chats[selectedChat] : null}
+                    chat={selectedChat !== null ? chats[selectedChat] : null}
                     messages={messages}
                     onChangeMessages={onChangeMessage}
-                    updateLastMessages={updateLastMessages(chats, setChats)}
                     io={io}
                 />
             </div>

@@ -5,6 +5,14 @@ let messageSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users',
     },
+    sendto: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+    }],
+    seenby: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+    }],
     message: {
         type: String,
     },

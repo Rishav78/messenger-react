@@ -35,6 +35,16 @@ module.exports = server => {
             });
         });
 
+        socket.on('message-delivered', async data => {
+            const { success, msg } = await controllers.messages.updateMessage(data);
+            if(!success) return;
+            
+            const { sender } = msg;
+            const { _id } = sender;
+            const socketid = connected[_id];
+            io.to(socketid).emit('update-message-information', { success, msg });
+        })
+
         socket.on('send-message', async (data, cb) => {
             const message = await controllers.messages.saveMessage(data, cb);
             data.receiver.forEach( e => {

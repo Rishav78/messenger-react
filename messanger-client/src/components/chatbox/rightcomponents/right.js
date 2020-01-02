@@ -8,7 +8,6 @@ function Right(props) {
             chat={props.chat}
             messages={props.messages}
             onChangeMessages={props.onChangeMessages}
-            updateLastMessages={props.updateLastMessages}
             io={props.io}
         /> : <WelcomePage />
     );
