@@ -5,19 +5,18 @@ let messageSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users',
     },
-    sendto: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'users',
-    }],
-    seenby: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'users',
+    receivedby: [{
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'users',
+        },
+        seen: {
+            type: Boolean,
+            default: false,
+        }
     }],
     message: {
         type: String,
-    },
-    status: {
-        type: Number,
     },
 },{
     timestamps: true

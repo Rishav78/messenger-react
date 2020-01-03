@@ -20,7 +20,7 @@ function Chatpofile(props) {
     const [user, onChangeUser] = useState({});
 
     function msginfo() {
-        const { _id:sender } = user, status = 0, createdAt = new Date();
+        const { _id:sender } = user, status = false, createdAt = new Date();
         return { sender, status, createdAt, message };
     }
     

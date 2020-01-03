@@ -10,10 +10,8 @@ exports.updateMessage = async data => {
     const { _id:userid } = user;
     const { _id } = msg;
 
-    const { success } = await services.messages.updateMessage(_id, userid);
-    if(!success) return { success };
-    msg.sendto.push(user);
-    return { msg, success };
+    const res = await services.messages.updateMessage(_id, userid);
+    return res;
 }
 
 exports.getmessages = async (req, res) => {

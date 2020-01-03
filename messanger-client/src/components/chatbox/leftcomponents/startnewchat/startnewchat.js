@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Friend from './friend/friend';
 import Searchbar from '../searchbar/searchbar';
 import Header from '../Header/header';
+import GroupChatIcon from './groupchaticon/groupchaticon';
 
 async function fetchWrapper(url) {
     const Token = localStorage.getItem('Token1');
@@ -55,6 +56,9 @@ function Startnewchat(props) {
                 <Searchbar
                     placeholder="Search here..."
                     onchange={onChangeSearch} />
+            </div>
+            <div>
+                <GroupChatIcon />
             </div>
             <div style={{flex: 1, overflow: 'scroll'}}>
                 <div>
