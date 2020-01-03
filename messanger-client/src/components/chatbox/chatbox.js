@@ -86,7 +86,6 @@ function selectChatAndGetMessages(props, onchatselect, chats, changemessages, se
 }
 
 
-
 function Chatbox(props) {
     const [selectedChat, onChatSelect] = useState(null);
     const [messages, onChangeMessage] = useState([]);
@@ -128,6 +127,10 @@ function Chatbox(props) {
         } else {
             updateLastMessages(data);
         }
+    }
+
+    function createGroup() {
+        
     }
 
     useEffect(() => {

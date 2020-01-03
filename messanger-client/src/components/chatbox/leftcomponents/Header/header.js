@@ -1,5 +1,5 @@
 import React from 'react';
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 function Header(props) {
     return (
@@ -9,7 +9,7 @@ function Header(props) {
                     style={{ marginRight: 20, cursor: 'pointer', display: 'flex', alignItems: 'center' }}
                     onClick={props.onBack}
                 >
-                    <KeyboardBackspaceIcon
+                    <ArrowBackIcon
                         style={{ color: 'white' }}
                     />
                 </div>
