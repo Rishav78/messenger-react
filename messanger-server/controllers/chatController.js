@@ -20,6 +20,21 @@ exports.createPrivateChatroom = async (data, cb) => {
     cb({ ...res, _id });
 }
 
+exports.createGroupChat = async (data, cb) => {
+    const { Token } = data;
+    const { authenticated, user } = auth.validToken(Token);
+
+    if(!authenticated) return cb({authenticated: false});
+
+    const { _id } = user.user;
+    const { members, chatname } = data;
+    const chatmembers = [...members, _id];
+    console.log(chatmembers);
+    const res = await services.chats.createGroupChat(chatmembers, chatname);
+    cb({ ...res, _id });
+
+}
+
 exports.chatExists = async (req, res) => {
     const { id } = req.query;
     const { user:_id } = req;

@@ -53,13 +53,13 @@ function createChatRoom(_id, chats, setchats, changemessages, onchatselect){
     const Token = localStorage.getItem('Token1');
     io.emit('create-private-chat-room', { Token, _id }, data => {
         const { chat, _id:id } = data;
-            const { chatmembers, ...rest } = chat;
-            rest.sender = id;
-            rest.receiver = chatmembers.filter( usr => usr._id !== id);
-            chats = [rest, ...chats];
-            setchats(chats);
-            onchatselect(0);
-            changemessages([])
+        const { chatmembers, ...rest } = chat;
+        rest.sender = id;
+        rest.receiver = chatmembers.filter( usr => usr._id !== id);
+        chats = [rest, ...chats];
+        setchats(chats);
+        onchatselect(0);
+        changemessages([])
     });
 }
 
@@ -129,8 +129,18 @@ function Chatbox(props) {
         }
     }
 
-    function createGroup() {
-        
+    function createGroup({members, chatname}) {
+        const Token = localStorage.getItem('Token1');
+        io.emit('create-group', { Token, members, chatname }, data => {
+            const { chat, _id:id } = data;
+            const { chatmembers, ...rest } = chat;
+            rest.sender = id;
+            rest.receiver = chatmembers.filter( usr => usr._id !== id);
+            const newchats = [rest, ...chats];
+            setChats(newchats);
+            onChatSelect(0);
+            onChangeMessage([])
+        });
     }
 
     useEffect(() => {
@@ -172,6 +182,7 @@ function Chatbox(props) {
                     io={io}
                     chats={chats}
                     selectedchat={selectedChat}
+                    createGroup={createGroup}
                     onChatSelect={selectChatAndGetMessages(props, onChatSelect, chats, onChangeMessage, setChats)}
                 />
             </div>

@@ -30,7 +30,7 @@ function Friendslist(props) {
 
         getfriends();
 
-    })
+    },[]);
 
     return (
         <div>

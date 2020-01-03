@@ -2,18 +2,28 @@ const chats = require('../models/chats');
 const users = require('../models/users');
 
 exports.createPrivateChatroom = async chatmembers => {
+    const select = { firstname: 1, lastname: 1, imageid: 1 };
     try {
         const query = { chattype: false, chatmembers };
         const chatroom = new chats(query);
         let chat = await chatroom.save();
-        chat = await chat.populate({
-            path: 'chatmembers',
-            select: {
-                firstname: 1,
-                lastname: 1,
-                imageid: 1,
-            }
-        }).execPopulate();
+        chat = await chat.populate({ path: 'chatmembers', select }).execPopulate();
+        chatmembers.forEach( async _id => {
+            await users.updateOne({ _id }, { '$push': { 'activeChats': chat._id } });
+        });
+        return { success: true, chat };
+    } catch (err) {
+        return { success: false };
+    }
+}
+
+exports.createGroupChat = async (chatmembers, chatname) => {
+    const select = { firstname: 1, lastname: 1, imageid: 1 };
+    try {
+        const query = { chattype: true, chatmembers, chatname, imageid: 'default.png' };
+        const chatroom = new chats(query);
+        let chat = await chatroom.save();
+        chat = await chat.populate({ path: 'chatmembers', select }).execPopulate();
         chatmembers.forEach( async _id => {
             await users.updateOne({ _id }, { '$push': { 'activeChats': chat._id } });
         });

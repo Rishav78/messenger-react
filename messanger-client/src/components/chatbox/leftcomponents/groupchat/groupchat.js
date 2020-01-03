@@ -12,10 +12,16 @@ function GroupChat(props) {
         onChangeComponent(1);
     }
 
+    function createGroup(chatname) {
+        props.createGroup({members, chatname});
+        props.changeComponent(0)
+    }
+
     return (
         members.length>0 && component===1 ?
         <NewGroup
             changeComponent={onChangeComponent}
+            onDone={createGroup}
         /> :
         <GroupParticipants
             changeComponent={props.changeComponent}

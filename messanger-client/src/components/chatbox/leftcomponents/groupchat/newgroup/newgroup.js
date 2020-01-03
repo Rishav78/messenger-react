@@ -31,8 +31,10 @@ function NewGroup(props) {
                 </div>
                 {
                     subject &&
-                    <div style={{ paddingTop:28, textAlign:"center", backgroundColor: '#f3f4f4'}}>
-                        <div style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', width: 46, height: 46, borderRadius: '50%', backgroundColor: '#5cb85c', boxShadow: '1px 1px 5px #333', cursor: 'pointer'}}>
+                    <div style={{ paddingTop:28, textAlign:"center"}}>
+                        <div
+                            onClick={() => props.onDone(subject)} 
+                            style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', width: 46, height: 46, borderRadius: '50%', backgroundColor: '#5cb85c', boxShadow: '1px 1px 5px #333', cursor: 'pointer'}}>
                             <DoneIcon
                                 style={{ color: 'white' }}
                             />

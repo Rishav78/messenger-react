@@ -27,6 +27,8 @@ module.exports = server => {
 
         socket.on('create-private-chat-room', controllers.chats.createPrivateChatroom);
 
+        socket.on('create-group', controllers.chats.createGroupChat);
+
         socket.on('typing', (data) => {
             const { sender, _id, receiver, status } = data;
             receiver.forEach( e => {

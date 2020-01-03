@@ -12,8 +12,8 @@ function Chat(props) {
     const [lastupdate, onChangeLastUpdate] = useState('');
 
     // function newMessage(data) {
-    //     console.log('start', props.data.chat._id, data._id);
-    //     if(props.data.chat._id !== data._id) return;
+    //     console.log('start', props.data._id, data._id);
+    //     if(props.data._id !== data._id) return;
     //     console.log('end')
     //     const { msg } = data;
     //     const message = {
@@ -30,13 +30,14 @@ function Chat(props) {
     // },[props]);
 
     useEffect(() => {
-        if(props.data.chat.messages.length > 0) {
+        console.log(props.data)
+        if(props.data.messages.length > 0) {
             const data = {
-                sender: props.data.chat.messages[0].sender.firstname,
-                message: props.data.chat.messages[0].message
+                sender: props.data.messages[0].sender.firstname,
+                message: props.data.messages[0].message
             };
             onChangeLastMessage(data);
-            onChangeLastUpdate(getTimePeriod(props.data.chat.messages[0].createdAt));
+            onChangeLastUpdate(getTimePeriod(props.data.messages[0].createdAt));
         }
     },[props])
 
@@ -45,13 +46,13 @@ function Chat(props) {
             <div className="card" style={{backgroundColor: props.selectedchat ? '#ebebeb':null}}>
                 <div className="dp">
                     <div style={{width: 49, height: 49, borderRadius: '50%', overflow: 'hidden'}}>
-                        <img alt="user" style={{ width: '100%', height: '100%' }} src={`http://localhost:8000/profilepicture/?id=${props.data.chat.chattype ? props.data.chat.imageid : props.data.chat.receiver[0].imageid}`} />
+                        <img alt="user" style={{ width: '100%', height: '100%' }} src={`http://localhost:8000/profilepicture/?id=${props.data.chattype ? props.data.imageid : props.data.receiver[0].imageid}`} />
                     </div>
                 </div>
                 <div className="chatinfomation">
                     <div className="basic">
                         <div className="name"> 
-                            <span> {props.data.chat.chattype ? props.data.chat.chatname : (props.data.chat.receiver[0].firstname + ' ' + props.data.chat.receiver[0].lastname)} </span>
+                            <span> {props.data.chattype ? props.data.chatname : (props.data.receiver[0].firstname + ' ' + props.data.receiver[0].lastname)} </span>
                         </div>
                         <div className="activity" style={{marginRight: 18}}>
                             <span> {lastupdate} </span>
@@ -59,7 +60,7 @@ function Chat(props) {
                     </div>
                     <div className="msgAndStatus">
                         <div className="lastmessage" style={{ marginTop: 4}}>
-                            { props.data.chat.messages.length>0 ? (props.data.chat.chattype ? 
+                            { props.data.messages.length>0 ? (props.data.chattype ? 
                                 <React.Fragment>
                                     <span>{lastmessage.sender}</span>
                                     <span>: </span>
@@ -79,3 +80,6 @@ function Chat(props) {
 }
 
 export default Chat;
+/*
+
+*/

@@ -44,8 +44,8 @@ function GroupParticipants(props) {
             <div style={{padding: '25px 0px 25px 25px'}}>
                 <div>
                     {
-                        selected.map( e => 
-                            <div>
+                        selected.map( (e, i) => 
+                            <div key={i}>
                                 <div style={{ display: 'inline-flex' , flexDirection: 'row', borderRadius: 16, backgroundColor: '#f6f6f6'}}>
                                     <div style={{ width: 26, height: 26,borderRadius: '50%', overflow: 'hidden', marginRight: 12}}>
                                         <img src={`http://localhost:8000/profilepicture/?id=${e.imageid}`} style={{ width: '100%', height: '100%' }} />

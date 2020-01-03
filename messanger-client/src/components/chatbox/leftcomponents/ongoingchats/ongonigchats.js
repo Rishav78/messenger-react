@@ -31,7 +31,7 @@ function OngoingChats(props) {
                         <Chat 
                             key={i}
                             io={props.io}
-                            data={{ chat, _id:chats._id }}
+                            data={chat}
                             onclick={ () => props.onChatSelect(i)}
                             selectedchat={props.selectedchat === i}
                             userlastmessage={props.userlastmessage}

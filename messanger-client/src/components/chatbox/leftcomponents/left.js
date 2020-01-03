@@ -39,6 +39,7 @@ function Left(props) {
         /> :
         <GroupChat 
             io={props.io}
+            createGroup={props.createGroup}
             changeComponent={changeComponent}
         />
 
