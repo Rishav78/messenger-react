@@ -1,47 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import Friend from './friend/friend';
 import Searchbar from '../searchbar/searchbar';
 import Header from '../Header/header';
 import GroupChatIcon from './groupchaticon/groupchaticon';
-
-async function fetchWrapper(url) {
-    const Token = localStorage.getItem('Token1');
-    const res = await fetch(url ,{
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${Token}`
-        }
-    });
-    const data = await res.json();
-    return data;
-}
+import Friendslist from '../friendslist/friendslist';
 
 function getname(friend) {
     return friend.firstname+' '+friend.lastname;
-}
-
-async function getfriends(cb) {
-    const url = 'http://localhost:8000/friends';
-    const { friends } = await fetchWrapper(url);
-    cb(friends);
-}
-
-function createChatRoom(props) {
-    return function(_id) {
-        props.onChatSelect(null, _id);
-    }
 }
 
 function Startnewchat(props) {
     const [friends, onChangeFriends] = useState([]);
     const [search, onChangeSearch] = useState('');
 
-    
-    useEffect(() => {
+    function createChatRoom(friend) {
+        const { _id } = friend;
+        props.onChatSelect(null, _id);
+    }
 
-        getfriends(onChangeFriends);
-
-    },[props])
+    function filter(friend) {
+        const searchCondition = !search || getname(friend).match(new RegExp(search, "i"));
+        return searchCondition;
+    }
 
 
     return (
@@ -63,31 +42,13 @@ function Startnewchat(props) {
                 />
             </div>
             <div style={{flex: 1, overflow: 'scroll'}}>
-                <div>
-                {
-                    friends.filter(e => !search || getname(e).match(new RegExp(search, "i"))).map((friend, i) => 
-                        <Friend 
-                            key={i}
-                            data={friend}
-                            onChatSelect={createChatRoom(props)}
-                        />)
-                }
-                </div>
+                <Friendslist
+                    filter={filter}
+                    onSelect={createChatRoom} />
             </div>
         </div>
     );
 }
-
-/*
-{
-                    friends.filter(e => !search || getname(e).match(new RegExp(search, "i"))).map((friend, i) => 
-                        <Friend 
-                            key={i}
-                            data={friend}
-                            onChatSelect={createChatRoom(props)}
-                        />)
-                }
-                */
 
 
 export default Startnewchat;
