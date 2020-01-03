@@ -51,7 +51,7 @@ function Addfriends(props) {
             <div>
                 <Header 
                     tittle="Add Friend"
-                    onBack={props.changeComponent}
+                    onBack={() => props.changeComponent(0)}
                 />
             </div>
             <div>

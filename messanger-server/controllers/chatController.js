@@ -25,6 +25,5 @@ exports.chatExists = async (req, res) => {
     const { user:_id } = req;
     const { activeChats } = await services.chats.chatExists(_id, id);
     const chat = activeChats.length > 0 ? activeChats[0] : null;
-    console.log(chat);
     res.json({chat});
 }

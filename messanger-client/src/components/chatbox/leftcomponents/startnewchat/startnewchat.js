@@ -49,7 +49,7 @@ function Startnewchat(props) {
             <div>
                 <Header
                     tittle="New Chat"
-                    onBack={props.changeComponent}
+                    onBack={() => props.changeComponent(0)}
                     />
             </div>
             <div>
@@ -58,7 +58,9 @@ function Startnewchat(props) {
                     onchange={onChangeSearch} />
             </div>
             <div>
-                <GroupChatIcon />
+                <GroupChatIcon
+                    onclick={() => props.changeComponent(4)}
+                />
             </div>
             <div style={{flex: 1, overflow: 'scroll'}}>
                 <div>

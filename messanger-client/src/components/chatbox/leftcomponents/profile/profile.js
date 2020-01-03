@@ -49,7 +49,7 @@ function Profile(props) {
         <div>
             <Header
                     tittle="Profile"
-                    onBack={props.changeComponent}
+                    onBack={() => props.changeComponent(0)}
             />
             <div>
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 20, marginBottom: 20}}>

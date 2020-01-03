@@ -20,6 +20,5 @@ exports.addnewfriend = async (data, cb) => {
 exports.getfriends = async (req, res) => {
     const { user:_id } = req;
     const { friends } = await services.friends.getfriends(_id);
-    console.log( friends);
     return res.json({ friends });
 }

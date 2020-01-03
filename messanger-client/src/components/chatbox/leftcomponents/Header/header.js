@@ -7,7 +7,7 @@ function Header(props) {
             <div style={{ display: 'flex', flexDirection: 'row', height: 59, alignItems: 'center', width: '100%'}}>
                 <div 
                     style={{ marginRight: 20, cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-                    onClick={() => props.onBack(0)}
+                    onClick={props.onBack}
                 >
                     <KeyboardBackspaceIcon
                         style={{ color: 'white' }}
