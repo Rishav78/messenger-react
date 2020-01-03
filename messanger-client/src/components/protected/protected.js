@@ -9,29 +9,30 @@ class ProtectedRoute extends Component{
         super(props);
         this.state = {
             authenticated: false,
+            isLoading: true,
         }
     }
 
     authentication = async () => {
         const Token = localStorage.getItem('Token1');
-        if(!Token) return this.props.history.push('/');
-        const res = await fetch(`http://localhost:8000/validtoken/?Token=${Token}`);
-        const data = await res.json();
-        const { authenticated } = data;
-        if(!authenticated) return this.props.history.push('/');
+        const res = await fetch(`http://localhost:8000/validtoken/?token=${Token}`, {
+            method: 'GET',
+        });
+        const { authenticated } = await res.json();
+        await this.setState({ authenticated });
+        await this.setState({ isLoading: false});
     }
 
-    async componentDidMount() {
-        await this.authentication();
+    componentDidMount() {
+        this.authentication();
     }
 
     render(){
         const { component:Components, ...rest } = this.props;
         return (
-            <Route
-                {...rest}
-                render={(props) => <Components {...props} />} 
-            />
+            this.state.isLoading ? <div></div> :
+            this.state.authenticated ? <Route {...rest} render={(props) => <Components {...props} />} /> : 
+            <Redirect to="/" />
         )
     }
 }

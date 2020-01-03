@@ -20,14 +20,6 @@ async function fetchWrapper(url, method = 'GET', body) {
     return data;
 }
 
-async function authentication(props) {
-    const Token = localStorage.getItem('Token1');
-    const url = 'http://localhost:8000/validtoken';
-    const { authenticated } = await fetchWrapper(url);
-    if(!authenticated) return props.history.push('/');
-    io.emit('new-connection', { Token });
-}
-
 async function getmessages(_id, cb) {
     const url = `http://localhost:8000/messages?id=${_id}`;
     const { messages } = await fetchWrapper(url);
@@ -45,7 +37,6 @@ async function getChats(cb) {
         rest.receiver = chatmembers.filter( usr => usr._id !== _id);
         return rest;
     });
-    console.log(chats);
     cb(chats);
 }
 
@@ -118,7 +109,6 @@ function Chatbox(props) {
 
     function newMessage(data) {
         const {msg} = data;
-        console.log(data);
         const Token = localStorage.getItem('Token1');
         io.emit('message-delivered', { user, msg, Token });
         if(selectedChat!==null && chats[selectedChat]._id === data._id) {
@@ -144,8 +134,7 @@ function Chatbox(props) {
     }
 
     useEffect(() => {
-
-        authentication(props);
+        
         getChats(setChats);
 
     },[props])
@@ -170,7 +159,8 @@ function Chatbox(props) {
     }, [chats, messages]);
 
     useState(() => {
-
+        const Token = localStorage.getItem('Token1');
+        io.emit('new-connection', { Token });
         getuserinfo();
 
     },[]);

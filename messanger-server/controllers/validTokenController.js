@@ -1,13 +1,20 @@
 const services = require('../services');
+const jwt = require('jsonwebtoken');
 const auth = require('../auth/validToken');
 
 exports.validToken =  async (req, res) => {
-    const { user:_id } = req;
-    const { user }  = await services.user.userInformation(_id);
-    if(user) {
-        return res.json({ authenticated: true, user });
-    } else {
-        return res.json({ authenticated: false });
+    try {
+        const {token} = req.query;
+        const { user:usr } = jwt.verify(token, 'secretKey');
+        const { _id } = usr;
+        const { user }  = await services.user.userInformation(_id);
+        if(user) {
+            return res.json({ authenticated: true, user });
+        } else {
+            return res.json({ authenticated: false });
+        }
+    } catch (err) {
+        return res.json({ authenticated: false })
     }
 }
 

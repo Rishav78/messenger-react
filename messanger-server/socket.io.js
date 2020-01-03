@@ -19,6 +19,8 @@ module.exports = server => {
             connected[_id] = socket.id;
             connected2[socket.id] = _id;
 
+            console.log(connected)
+
             socket.broadcast.emit('user-status', { _id, status: 1 });
             console.log('a user connected');
         })

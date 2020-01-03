@@ -29,7 +29,6 @@ exports.createGroupChat = async (data, cb) => {
     const { _id } = user.user;
     const { members, chatname } = data;
     const chatmembers = [...members, _id];
-    console.log(chatmembers);
     const res = await services.chats.createGroupChat(chatmembers, chatname);
     cb({ ...res, _id });
 
