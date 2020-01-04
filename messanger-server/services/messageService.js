@@ -23,7 +23,10 @@ exports.getmessages = async _id => {
                         createdAt: 1,
                     }
                 },
-                populate: { path: 'receivedby.user', select }
+                populate: [
+                    { path: 'receivedby.user', select },
+                    { path: 'sender', select }
+                ]
             });
         return { success: true, messages };
     } catch (err) {
@@ -32,18 +35,12 @@ exports.getmessages = async _id => {
 }
 
 exports.saveMessage = async (_id, message, sender) => {
+    const select = { firstname: 1, lastname: 1, imageid: 1 };
     try {
         const newmessage = new messages({ sender, message, sendto: [] });
         let msg = await newmessage.save();
         await chats.updateOne({ _id }, { '$push': { 'messages': msg._id } });
-        msg = await msg.populate({
-            path: 'sender',
-            select: {
-                firstname: 1,
-                lastname: 1,
-                imageid: 1,
-            }
-        }).execPopulate();
+        msg = await msg.populate({ path: 'sender', select }).execPopulate();
         return { success: true, msg };
     } catch (err) {
         return { success: false };

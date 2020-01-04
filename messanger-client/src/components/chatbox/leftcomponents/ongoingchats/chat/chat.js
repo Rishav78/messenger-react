@@ -30,7 +30,7 @@ function Chat(props) {
     // },[props]);
 
     useEffect(() => {
-        console.log(props.data)
+        // console.log(props.data)
         if(props.data.messages.length > 0) {
             const data = {
                 sender: props.data.messages[0].sender.firstname,
