@@ -3,9 +3,13 @@ const chats = require('../models/chats');
 
 exports.updateMessage = async (_id, userid) => {
     try {
-        const msg = await messages.findByIdAndUpdate(_id, 
+        const select = { firstname: 1, lastname: 1, imageid: 1 };
+        let msg = await messages.findByIdAndUpdate(_id, 
             { '$push': {'receivedby': { user: userid } } },
             {new: true, useFindAndModify: false});
+        msg = await msg.populate({ path: 'receivedby.user', select })
+            .populate({ path: 'sender', select }).execPopulate();
+        console.log(msg);
         return { success: true, msg };
     } catch (err) {
         return { success:  false };

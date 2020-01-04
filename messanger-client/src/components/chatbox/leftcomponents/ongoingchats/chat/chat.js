@@ -11,26 +11,7 @@ function Chat(props) {
     const [lastmessage, onChangeLastMessage] = useState({});
     const [lastupdate, onChangeLastUpdate] = useState('');
 
-    // function newMessage(data) {
-    //     console.log('start', props.data._id, data._id);
-    //     if(props.data._id !== data._id) return;
-    //     console.log('end')
-    //     const { msg } = data;
-    //     const message = {
-    //         sender: msg.sender.firstname,
-    //         message: msg.message
-    //     };
-    //     onChangeLastMessage(message);
-    //     onChangeLastUpdate(getTimePeriod(msg.createdAt))
-    // }
-
-    // useEffect(() => {
-    //     props.io.on('new-message', newMessage);
-    //     return () => props.io.off('new-message', newMessage);
-    // },[props]);
-
     useEffect(() => {
-        // console.log(props.data)
         if(props.data.messages.length > 0) {
             const data = {
                 sender: props.data.messages[0].sender.firstname,
@@ -62,8 +43,13 @@ function Chat(props) {
                         <div className="lastmessage" style={{ marginTop: 4}}>
                             { props.data.messages.length>0 ? (props.data.chattype ? 
                                 <React.Fragment>
-                                    <span>{lastmessage.sender}</span>
-                                    <span>: </span>
+                                    {
+                                        props.user._id !== props.data.messages[0].sender._id &&
+                                        <React.Fragment>
+                                            <span>{lastmessage.sender}</span>
+                                            <span>: </span>
+                                        </React.Fragment>
+                                    }
                                     <span>{lastmessage.message}</span>
                                 </React.Fragment> :
                                 <React.Fragment>

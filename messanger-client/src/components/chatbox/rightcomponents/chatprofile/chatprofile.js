@@ -21,7 +21,7 @@ function Chatpofile(props) {
     const [typingStatus, onChangeTypingStatus] = useState(false);
 
     function msginfo() {
-        const { _id:sender } = user, status = false, createdAt = new Date();
+        const sender = user, status = false, createdAt = new Date();
         return { sender, status, createdAt, message };
     }
     
@@ -40,9 +40,9 @@ function Chatpofile(props) {
         props.onChangeMessages(tempmessages);
 
         io.emit('send-message',{ _id, receiver, message, Token },(data) => {
-            tempmessages.pop();
             const { msg } = data;
-            const newMessages = [...tempmessages, msg];
+            console.log(msg)
+            const newMessages = [...props.messages, msg];
             props.onChangeMessages(newMessages);
             onchange('');
         });

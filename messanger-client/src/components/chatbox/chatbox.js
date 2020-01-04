@@ -143,6 +143,8 @@ function Chatbox(props) {
 
         io.on('update-message-information', updateMessageInformation);
 
+        console.log(messages)
+
         if(messages.length !== 0) {
             const newchats = [...chats];
             newchats[selectedChat].messages = [messages[messages.length - 1]];
