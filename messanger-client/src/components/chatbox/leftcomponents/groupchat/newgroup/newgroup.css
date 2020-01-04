@@ -1,0 +1,7 @@
+.groupimage > div {
+    display: none;
+}
+
+.groupimage:hover > div {
+    display: block;
+}

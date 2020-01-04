@@ -20,7 +20,7 @@ exports.createPrivateChatroom = async chatmembers => {
 exports.createGroupChat = async (chatmembers, chatname) => {
     const select = { firstname: 1, lastname: 1, imageid: 1 };
     try {
-        const query = { chattype: true, chatmembers, chatname, imageid: 'default.png' };
+        const query = { chattype: true, chatmembers, chatname, imageid: 'whatApp_group.png' };
         const chatroom = new chats(query);
         let chat = await chatroom.save();
         chat = await chat.populate({ path: 'chatmembers', select }).execPopulate();

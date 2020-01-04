@@ -19,10 +19,16 @@ module.exports = server => {
             connected[_id] = socket.id;
             connected2[socket.id] = _id;
 
-            console.log(connected)
+            io.emit('user-status', { _id, status: true });
 
             socket.broadcast.emit('user-status', { _id, status: 1 });
             console.log('a user connected');
+        });
+
+        socket.on('user-status', (data, cb) => {
+            const { _id } = data;
+            const status = typeof connected[_id] !== 'undefined';
+            cb({status: status});
         })
 
         socket.on('add-new-friend', controllers.friends.addnewfriend);
@@ -32,7 +38,8 @@ module.exports = server => {
         socket.on('create-group', controllers.chats.createGroupChat);
 
         socket.on('typing', (data) => {
-            const { sender, _id, receiver, status } = data;
+            const { chat, status, user:sender } = data;
+            const { receiver, _id } = chat;
             receiver.forEach( e => {
                 const socketid = connected[e._id];
                 io.to(socketid).emit('user-typing', { _id, sender, status });
@@ -62,7 +69,7 @@ module.exports = server => {
             delete connected2[socket.id];
             delete connected[_id];
             console.log(connected)
-            socket.broadcast.emit('user-status', { _id, status: 0 });
+            socket.broadcast.emit('user-status', { _id, status: false });
             console.log('user disconnected')
         });
     });

@@ -1,6 +1,21 @@
 const services = require('../services');
 const jwt = require('jsonwebtoken');
+const path = require('path');
+const fs = require('fs');
 const auth = require('../auth/validToken');
+
+function saveImage(buffer, name) {
+    const dir = path.join(__dirname, '..', 'assets', 'images', name);
+    fs.open(dir, 'a', 0755, function(err, fd) {
+        if (err) throw err;
+
+        fs.write(fd, buffer, null, 'Binary', function(err, written, buff) {
+            fs.close(fd, function() {
+                console.log('File saved successful!');
+            });
+        })
+    });
+}
 
 exports.existingChats = async (req , res) => {
     const { user:_id } = req;

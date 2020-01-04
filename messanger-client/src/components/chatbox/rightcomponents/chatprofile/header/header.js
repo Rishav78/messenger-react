@@ -2,35 +2,52 @@ import React, {useState, useEffect} from 'react';
 
 function Header(props) {
 
-    // const [useronline, onChangeUserOnline] = useState(0);
-    // const [usertyping, onChangeUserTyping] = useState(0);
-    // const [sendername, onChangeSenderName] = useState('');
-
-    // useEffect(() => {
-    //     onChangeUserOnline(0);
-    //     onChangeUserTyping(0);
-    //     onChangeSenderName('');
-    // },[props])
+    const [useronline, onChangeUserOnline] = useState(false);
+    const [usertyping, onChangeUserTyping] = useState(false);
+    const [sendername, onChangeSenderName] = useState('');
 
 
-    // function userStatus(data) {
-    //     if(props.data.chattype === true) return onChangeUserOnline(0);
-    //     if(props.data.receiver[0]._id !== data._id) return console.log(props.data.receiver[0]._id, data._id);
-    //     onChangeUserOnline(data.status);
-    // }
+    function userStatus(data) {
+        if(props.data.chattype) return onChangeUserOnline(false);
+        if(props.data.receiver[0]._id !== data._id) return;
+        onChangeUserOnline(data.status);
+    }
 
-    // function userTyping(data) {
-    //     console.log(data._id, props.data._id)
-    //     if(data._id !== props.data._id) return;
-    //     const sender = props.data.receiver.filter( e => e._id === data.sender);
-    //     if(props.data.chattype === 1) onChangeSenderName(sender.firstname+' '+sender.lastname);
-    //     onChangeUserTyping(data.status);
-    // }
+    function userTyping(data) {
+        const {sender} = data;
+        if(data._id !== props.data._id) return;
+        if(props.data.chattype) onChangeSenderName(sender.firstname);
+        onChangeUserTyping(data.status);
+    }
 
-    // useEffect(() => {
-    //     props.io.on('user-status', userStatus);
-    //     props.io.on('user-typing', userTyping);
-    // },[])
+    useEffect(() => {
+
+        const { io } = props;
+        io.on('user-status', userStatus);
+        io.on('user-typing', userTyping);
+        if(!props.data.chattype) {
+            io.emit('user-status', { _id: props.data.receiver[0]._id }, function(data) {
+                const { status } = data;
+                onChangeUserOnline(status);
+            });
+        }
+
+        return () => {
+
+            io.off('user-typing', usertyping)
+            io.off('user-status', userStatus)
+        };
+
+    },[props]);
+
+
+
+    useEffect(() => {
+
+        onChangeUserTyping(false);
+        onChangeSenderName('');
+
+    },[props]);
 
 
     return (
@@ -45,7 +62,24 @@ function Header(props) {
                     <div style={{ fontSize: 17, color: '#333' }}>
                         <span>{props.data.chattype ? props.data.chatname : (props.data.receiver[0].firstname + ' ' + props.data.receiver[0].lastname)}</span>
                     </div>
-                    
+                    { props.data.chattype ? 
+                        usertyping ? 
+                            <div style={{ color: '#5cb85c', fontSize: 14}}>
+                                <span>{sendername}&nbsp;</span>
+                                <span>is typing...</span>
+                            </div>:
+                            <div style={{marginTop: 4, fontSize: 14, color: '#9d9d9d'}}>
+                                <span>You, {props.data.receiver.map( e => e.firstname).join(', ')}</span>
+                            </div> : 
+                            <div style={{ fontSize: 14}}>
+                                {usertyping ?
+                                <span style={{ color: '#5cb85c'}}>typing...</span> :
+                                    useronline ?  
+                                    <span style={{color: '#333'}}>online</span> :
+                                    null
+                        }
+                        </div>
+                    }
                 </div>
             </div>
             <div>
